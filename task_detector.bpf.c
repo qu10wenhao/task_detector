@@ -12,6 +12,8 @@
 #include "task_detector.h"
 
 #define DEBUG_ON 0
+#define TASK_RUNNING 0x0000
+#define TASK_REPORT_MAX 0x0100
 
 struct{
 	__uint(type, BPF_MAP_TYPE_ARRAY);
@@ -38,21 +40,21 @@ struct{
 	__uint(type, BPF_MAP_TYPE_ARRAY);
 	__uint(max_entries, 1);
 	__type(key, int);
-	__type(key, int);
+	__type(value, int);
 } start_maps SEC(".maps");
 
 struct{
 	__uint(type, BPF_MAP_TYPE_ARRAY);
 	__uint(max_entries, 1);
 	__type(key, int);
-	__type(key, int);
+	__type(value, int);
 } end_maps SEC(".maps");
 
 struct{
 	__uint(type, BPF_MAP_TYPE_ARRAY);
 	__uint(max_entries, 1);
 	__type(key, int);
-	__type(key, int);
+	__type(value, int);
 } trace_on_maps SEC(".maps");
 
 static inline void *get_user_info(void)
@@ -114,20 +116,21 @@ static inline void add_trace(struct trace_info ti)
 	if (*end == *start)
 		return;
 
-	tip = get_trace(orig_end);
-	if (!tip) {
-		*end = orig_end;
-		return;
-	}
+	//tip = get_trace(orig_end);
+	//if (!tip) {
+	//	*end = orig_end;
+	//	return;
+	//}
 
-	memcpy(tip, &ti, sizeof(ti));
-	tip->ts = bpf_ktime_get_ns();
+	//memcpy(tip, &ti, sizeof(ti));
+	ti.ts = bpf_ktime_get_ns();
 
 	if (ti.type == TYPE_SYSCALL_ENTER ||
 	    ti.type == TYPE_SYSCALL_EXIT ||
 	    ti.type == TYPE_WAIT ||
 	    ti.type == TYPE_DEQUEUE)
-		bpf_get_current_comm(&tip->comm, sizeof(tip->comm));
+		bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
+	bpf_map_update_elem(&trace_info_maps, &orig_end, &ti, 0);
 }
 
 SEC("tp_btf/sched_process_exit")
@@ -168,9 +171,9 @@ SEC("tp_btf/sched_wakeup")
 int handle__sched_wakeup(u64 *ctx)
 {
 	struct task_struct *p = (void *) ctx[0];
-	int target_cpu = task_cpu(p);
+	//int target_cpu = task_cpu(p);
 	struct trace_info ti = {
-		.cpu = target_cpu,
+		.cpu = p->tgid,
 		.pid = p->pid,
 		.type = TYPE_ENQUEUE,
 	};
@@ -179,7 +182,7 @@ int handle__sched_wakeup(u64 *ctx)
 	if (!ui || !ui->pid || ui->pid != p->pid)
 		return 0;
 
-	set_trace_on(target_cpu);
+	set_trace_on(p->tgid);
 
 	add_trace(ti);
 

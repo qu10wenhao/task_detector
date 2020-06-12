@@ -20,7 +20,9 @@
 #include <bpf/libbpf.h>
 #include <bpf/bpf.h>
 //#include "bpf_load.h"
+#include "errno_helpers.h"
 #include "trace_helpers.h"
+#include "syscall_helpers.h"
 #include "task_detector.h"
 #include "task_detector.skel.h"
 
@@ -31,10 +33,10 @@ static int ti_map_fd;
 static int si_map_fd;
 static int start_map_fd;
 static int end_map_fd;
-
+static bool exiting;
 static int nr_cpus;
 static int trace_syscall;
-static char *target;
+static int target;
 static struct task_detector_bpf *obj;
 
 const char *argp_program_version = "task_detector 0.1";
@@ -50,7 +52,7 @@ const char argp_program_doc[] =
 
 static const struct argp_option opts[] = {
 	{ "pid", 'p', "PID", 0, "Process PID to trace"},
-	{ "tid", 's', "TID", 0, "Thread TID to trace"},
+	{ "syscall", 's', NULL, 0, "Trace system call"},
 	{},
 };
 
@@ -69,7 +71,7 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
 		target = pid;
 		break;
 	case 's':
-		trace_syscall = 1
+		trace_syscall = 1;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -139,6 +141,7 @@ static int print_trace_info(int start, int end)
 {
 	int key;
 	char d_str[16];
+	char comm_buf[2*TASK_COMM_LEN];
 	static u64 w_start, p_start;
 	static struct trace_info ti_last;
 
@@ -164,7 +167,7 @@ static int print_trace_info(int start, int end)
 			pr_ti(&ti, "ENQUEUE", NULL);
 			break;
 		case TYPE_WAIT:
-			if (ti.pid == atoi(target)) {
+			if (ti.pid == target) {
 				w_start = ti.ts;
 				pr_ti(&ti, "WAIT AFTER EXECUTED", d_str);
 			} else {
@@ -174,7 +177,7 @@ static int print_trace_info(int start, int end)
 			}
 			break;
 		case TYPE_EXECUTE:
-			if (ti.pid == atoi(target)) {
+			if (ti.pid == target) {
 				time_to_str(ti.ts - w_start,
 						d_str, sizeof(d_str));
 				pr_ti(&ti, "EXECUTE AFTER WAITED", d_str);
@@ -184,7 +187,7 @@ static int print_trace_info(int start, int end)
 			}
 			break;
 		case TYPE_DEQUEUE:
-			if (ti.pid == atoi(target))
+			if (ti.pid == target)
 				pr_ti(&ti, "DEQUEUE AFTER EXECUTED", d_str);
 			else {
 				time_to_str(ti.ts - p_start,
@@ -198,8 +201,9 @@ static int print_trace_info(int start, int end)
 			sik.pid = ti.pid;
 			sik.syscall = ti.syscall;
 			bpf_map_update_elem(si_map_fd, &sik, &siv, BPF_ANY);
+			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] ENTER",
-					ti.syscall, syscall_name[ti.syscall]);
+					ti.syscall, comm_buf);
 			pr_ti(&ti, func, NULL);
 			break;
 		case TYPE_SYSCALL_EXIT:
@@ -210,8 +214,9 @@ static int print_trace_info(int start, int end)
 				break;
 			time_to_str(ti.ts - siv, d_str, sizeof(d_str));
 			bpf_map_delete_elem(si_map_fd, &sik);
+			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] TAKE %s TO EXIT",
-					ti.syscall, syscall_name[ti.syscall], d_str);
+					ti.syscall, comm_buf, d_str);
 			pr_ti(&ti, func, NULL);
 			break;
 		default:
@@ -224,25 +229,21 @@ static int print_trace_info(int start, int end)
 	return end;
 }
 
-static int setup_user_info(char *pid)
+static int setup_user_info(int pid)
 {
 	int key = 0;
 	DIR *dir;
 	char buf[256];
 	struct user_info ui;
-
-	snprintf(buf, sizeof(buf), "/proc/%s", pid);
-
+	snprintf(buf, sizeof(buf), "/proc/%d", pid);
 	dir = opendir(buf);
 	if (!dir) {
 		printf("Open %s failed: %s\n", buf, strerror(errno));
 		return -1;
 	}
-
 	memset(&ui, 0, sizeof(ui));
-	ui.pid = atoi(pid);
+	ui.pid = pid;
 	ui.trace_syscall = trace_syscall;
-
 	bpf_map_update_elem(ui_map_fd, &key, &ui, BPF_ANY);
 
 	closedir(dir);
@@ -261,8 +262,7 @@ static inline void print_help(char *cmd)
 
 static void int_exit(int sig)
 {
-	task_detector_bpf__destroy(obj);
-	exit(0);
+	exiting = true;
 }
 
 int main(int argc, char **argv)
@@ -274,34 +274,39 @@ int main(int argc, char **argv)
 	};
 	
 	int err;
+	exiting = false;
 
 	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
 	if (err)
 		return err;
 
+	if (!target) {
+		print_help(argv[0]);
+		return 1;
+	}
+
+	printf("Start detecting task, pid %d\n",target);
+
+	init_syscall_names();
+
 	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
 	if (nr_cpus > NR_CPU_MAX) {
 		printf("Support Maximum %d cpus\n", NR_CPU_MAX);
-		return 1;
+		goto freename;
 	}
 	
 	err = bump_memlock_rlimit();
 	if (err) {
 		fprintf(stderr, "failed to increase rlimit: %d\n", err);
-		return 1;
+		goto freename;
 	}
-
-	if (load_kallsyms()) {
-		printf("Load kallsyms Failed\n");
-		return 1;
-	}
-
+	
 	obj = task_detector_bpf__open();
 	if(!obj){
 		fprintf(stderr, "failed to open and/or load BPF object\n");
-		return 1;
+		goto freename;
 	}
-	
+
 	err = task_detector_bpf__load(obj);
 	if(err){
 		fprintf(stderr, "failed to load BPF object: %d\n", err);
@@ -321,14 +326,16 @@ int main(int argc, char **argv)
 	end_map_fd = bpf_map__fd(obj->maps.end_maps);
 
 	if (setup_user_info(target)) {
-		printf("Illegal Target %s\n", target);
+		printf("Illegal Target %d\n", target);
 		goto cleanup;
 	}
-
+		
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 
 	while (1) {
+		if (exiting)
+			goto cleanup;
 		int key = 0, start = 0, end = 0;
 		struct user_info ui = {
 			.exit = 0,
@@ -336,7 +343,7 @@ int main(int argc, char **argv)
 
 		bpf_map_lookup_elem(ui_map_fd, &key, &ui);
 		if (ui.exit) {
-			printf("Target \"%s\" Destroyed\n", target);
+			printf("Target \"%d\" Destroyed\n", target);
 			goto cleanup;
 		}
 
@@ -355,5 +362,7 @@ int main(int argc, char **argv)
 
 cleanup:
 	task_detector_bpf__destroy(obj);
+freename:
+	free_syscall_names();
 	return err != 0;
 }

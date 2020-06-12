@@ -3,6 +3,7 @@
 
 #define NR_ENTRY_MAX		10000
 #define NR_CPU_MAX		512
+#define TASK_COMM_LEN		16
 
 typedef unsigned long long u64;
 typedef int pid_t;
@@ -37,7 +38,7 @@ struct si_key {
 	int syscall;
 	pid_t pid;
 };
-
+/*
 char *syscall_name[] = {
 	"read",
 	"write",
@@ -378,5 +379,5 @@ char *syscall_name[] = {
 	"io_uring_enter",
 	"io_uring_register",
 };
-
+*/
 #endif
