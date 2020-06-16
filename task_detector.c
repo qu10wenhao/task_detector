@@ -1,5 +1,7 @@
-//#define _GNU_SOURCE
-
+// SPDX-Licence-Identifier: GPL-2.0
+// Copyright (c) 2020 Wenhao Qu
+//
+// Based on task_detector by Yun Wang
 #include <argp.h>
 #include <stdio.h>
 #include <signal.h>
@@ -329,9 +331,10 @@ int main(int argc, char **argv)
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 
-	printf("Start tracing target task, pid %d\n", env.target);
+	printf("Start tracing schedule events ");
 	if (env.trace_syscall)
-		printf("Include SYSCALL\n");
+		printf("(include SYSCALL)");
+	printf("\nTarget task pid %d\n", env.target);
 	
 	/* main: print trace info */
 	while (1) {

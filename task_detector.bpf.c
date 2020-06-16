@@ -1,3 +1,7 @@
+// SPDX-Licence-Identifier: GPL-2.0
+// Copyright (c) 2020 Wenhao Qu
+//
+// Based on task_detector by Yun Wang
 #include "vmlinux.h"
 #include <bpf/bpf_helpers.h>
 #include "task_detector.h"

@@ -7,7 +7,8 @@ The event was translated into sentence to be more readable, by execute command '
 
 ```Shell
 # task_detector -p 24104
-Start tracing target task, pid 24104
+Start tracing schedule events 
+Target task pid 24104
 ----------------------------
 102770938643193            CPU=1      PID=24104  COMM=top                 ENQUEUE                                               
 102770938684071            CPU=1      PID=0      COMM=IDLE                PREEMPTED                            40us             
@@ -25,8 +26,8 @@ This could be helpful on debugging the competition on CPU resource, to find out 
 It can also tracing the syscall by append options -s.
 
 ```Shell
-Start tracing target task, pid 24104
-Include SYSCALL
+Start tracing schedule events (include SYSCALL)
+Target task pid 24104
 ----------------------------
 104043332442246            CPU=2      PID=24104  COMM=top                 ENQUEUE                                               
 104043332475329            CPU=2      PID=0      COMM=IDLE                PREEMPTED                            33us             

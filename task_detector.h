@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: GPL-2.0
+// Copyright (c) 2020 Wenhao Qu
+//
+// Based on task_detector by Yun Wang
 #ifndef TASK_DETECTOR_H
 #define TASK_DETECTOR_H
 
