@@ -1,12 +1,3 @@
-#ifdef asm_volatile_goto
-#undef asm_volatile_goto
-#endif
-
-#define asm_volatile_goto(x...) asm volatile("invalid use of asm_volatile_goto")
-
-//#include <linux/version.h>
-//#include <linux/ptrace.h>
-//#include <uapi/linux/bpf.h>
 #include "vmlinux.h"
 #include <bpf/bpf_helpers.h>
 #include "task_detector.h"
@@ -173,7 +164,7 @@ int handle__sched_wakeup(u64 *ctx)
 	struct task_struct *p = (void *) ctx[0];
 	//int target_cpu = task_cpu(p);
 	struct trace_info ti = {
-		.cpu = p->tgid,
+		.cpu = p->wake_cpu,
 		.pid = p->pid,
 		.type = TYPE_ENQUEUE,
 	};
@@ -182,7 +173,7 @@ int handle__sched_wakeup(u64 *ctx)
 	if (!ui || !ui->pid || ui->pid != p->pid)
 		return 0;
 
-	set_trace_on(p->tgid);
+	set_trace_on(p->wake_cpu);
 
 	add_trace(ti);
 
@@ -202,7 +193,7 @@ int handle__sched_switch(u64 *ctx)
 	if (!ui || !ui->pid)
 		return 0;
 
-	if (!should_trace(ti.cpu + 1)) {
+	if (!should_trace(ti.cpu)) {
 		if (ui->pid != prev->pid &&
 		    ui->pid != next->pid)
 			return 0;

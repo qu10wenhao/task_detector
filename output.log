@@ -1,0 +1,1013 @@
+Start detecting task, pid 9128
+Current trace cpu: 5
+----------------------------
+247707889414804            CPU=4      PID=9128   COMM=test                ENQUEUE                                               
+Current trace cpu: 5
+247707889429218            CPU=4      PID=0      COMM=IDLE                PREEMPTED                            14us             
+Current trace cpu: 5
+247707889429626            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 14us             
+Current trace cpu: 5
+247707899662282            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  10232us          
+Current trace cpu: 5
+247707899662676            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247707899671126            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8450ns           
+Current trace cpu: 5
+247707899671211            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8929ns           
+Current trace cpu: 5
+247707979693822            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  80ms             
+Current trace cpu: 5
+247707979694175            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247707979698066            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3891ns           
+Current trace cpu: 5
+247707979698145            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4323ns           
+Current trace cpu: 5
+247708029863453            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  50ms             
+Current trace cpu: 5
+247708029863785            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708029871226            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7441ns           
+Current trace cpu: 5
+247708029871310            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7857ns           
+Current trace cpu: 5
+247708098551914            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  68ms             
+Current trace cpu: 5
+247708098552247            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708098555348            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3101ns           
+Current trace cpu: 5
+247708098555427            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3513ns           
+Current trace cpu: 5
+247708158091106            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  59ms             
+Current trace cpu: 5
+247708158091498            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708158100099            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8601ns           
+Current trace cpu: 5
+247708158100185            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9079ns           
+Current trace cpu: 5
+247708230904317            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  72ms             
+Current trace cpu: 5
+247708230904681            CPU=4      PID=30     COMM=migration/4         PREEMPT                                               
+Current trace cpu: 5
+247708230906950            CPU=4      PID=30     COMM=migration/4         DEQUEUE AFTER PREEMPTED              2269ns           
+Current trace cpu: 5
+247708230907032            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2715ns           
+Current trace cpu: 5
+247708285974695            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  55ms             
+Current trace cpu: 5
+247708285975081            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708285983041            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7960ns           
+Current trace cpu: 5
+247708285983126            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8431ns           
+Current trace cpu: 5
+247708413813799            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247708413814213            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708413823240            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              9027ns           
+Current trace cpu: 5
+247708413823318            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9519ns           
+Current trace cpu: 5
+247708542147063            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  128ms            
+Current trace cpu: 5
+247708542147424            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708542155029            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7605ns           
+Current trace cpu: 5
+247708542155108            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8045ns           
+Current trace cpu: 5
+247708670528375            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  128ms            
+Current trace cpu: 5
+247708670528796            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708670537097            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8301ns           
+Current trace cpu: 5
+247708670537239            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8864ns           
+Current trace cpu: 5
+247708699870652            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  29ms             
+Current trace cpu: 5
+247708699871050            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708699893357            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              22us             
+Current trace cpu: 5
+247708699893440            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 22us             
+Current trace cpu: 5
+247708797780752            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  97ms             
+Current trace cpu: 5
+247708797781205            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708797789884            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8679ns           
+Current trace cpu: 5
+247708797789964            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9212ns           
+Current trace cpu: 5
+247708807698002            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9908us           
+Current trace cpu: 5
+247708807698371            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708807701726            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3355ns           
+Current trace cpu: 5
+247708807701815            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3813ns           
+Current trace cpu: 5
+247708830074094            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  22ms             
+Current trace cpu: 5
+247708830074320            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708830077993            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3673ns           
+Current trace cpu: 5
+247708830078071            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3977ns           
+Current trace cpu: 5
+247708883762180            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  53ms             
+Current trace cpu: 5
+247708883762502            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708883765639            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3137ns           
+Current trace cpu: 5
+247708883765728            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3548ns           
+Current trace cpu: 5
+247708926303437            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  42ms             
+Current trace cpu: 5
+247708926303809            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708926311926            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8117ns           
+Current trace cpu: 5
+247708926312012            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8575ns           
+Current trace cpu: 5
+247708953669703            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  27ms             
+Current trace cpu: 5
+247708953670036            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247708953673487            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3451ns           
+Current trace cpu: 5
+247708953673575            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3872ns           
+Current trace cpu: 5
+247709051067313            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  97ms             
+Current trace cpu: 5
+247709051067635            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709051071534            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3899ns           
+Current trace cpu: 5
+247709051071620            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4307ns           
+Current trace cpu: 5
+247709060987063            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9915us           
+Current trace cpu: 5
+247709060987355            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709060995115            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7760ns           
+Current trace cpu: 5
+247709060995200            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8137ns           
+Current trace cpu: 5
+247709121036638            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  60ms             
+Current trace cpu: 5
+247709121036962            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709121040495            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3533ns           
+Current trace cpu: 5
+247709121040582            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3944ns           
+Current trace cpu: 5
+247709189853467            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  68ms             
+Current trace cpu: 5
+247709189853867            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709189862840            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8973ns           
+Current trace cpu: 5
+247709189862930            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9463ns           
+Current trace cpu: 5
+247709219595231            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  29ms             
+Current trace cpu: 5
+247709219595556            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709219598297            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2741ns           
+Current trace cpu: 5
+247709219598379            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3148ns           
+Current trace cpu: 5
+247709281081031            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  61ms             
+Current trace cpu: 5
+247709281081401            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709281106004            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              24us             
+Current trace cpu: 5
+247709281106093            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 25us             
+Current trace cpu: 5
+247709317783416            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  36ms             
+Current trace cpu: 5
+247709317783822            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709317792903            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              9081ns           
+Current trace cpu: 5
+247709317792991            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9575ns           
+Current trace cpu: 5
+247709402643256            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  84ms             
+Current trace cpu: 5
+247709402643637            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709402646947            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3310ns           
+Current trace cpu: 5
+247709402647033            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3777ns           
+Current trace cpu: 5
+247709446515017            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  43ms             
+Current trace cpu: 5
+247709446515359            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709446522712            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7353ns           
+Current trace cpu: 5
+247709446522790            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7773ns           
+Current trace cpu: 5
+247709473642985            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  27ms             
+Current trace cpu: 5
+247709473643450            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709473646346            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2896ns           
+Current trace cpu: 5
+247709473646424            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3439ns           
+Current trace cpu: 5
+247709574402730            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  100ms            
+Current trace cpu: 5
+247709574403532            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709574412087            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8555ns           
+Current trace cpu: 5
+247709574412164            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9434ns           
+Current trace cpu: 5
+247709702235440            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247709702235854            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709702244202            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8348ns           
+Current trace cpu: 5
+247709702244286            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8846ns           
+Current trace cpu: 5
+247709727147265            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  24ms             
+Current trace cpu: 5
+247709727147664            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709727241727            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              94us             
+Current trace cpu: 5
+247709727241878            CPU=4      PID=9200   COMM=kworker/4:0-ata     PREEMPT                                               
+Current trace cpu: 5
+247709727275802            CPU=4      PID=9200   COMM=kworker/4:0-ata     DEQUEUE AFTER PREEMPTED              33us             
+Current trace cpu: 5
+247709727275933            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 128us            
+Current trace cpu: 5
+247709736416362            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9140us           
+Current trace cpu: 5
+247709736416726            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709736423680            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              6954ns           
+Current trace cpu: 5
+247709736423757            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7395ns           
+Current trace cpu: 5
+247709830096904            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  93ms             
+Current trace cpu: 5
+247709830097291            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709830104653            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7362ns           
+Current trace cpu: 5
+247709830104747            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7843ns           
+Current trace cpu: 5
+247709846685172            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  16ms             
+Current trace cpu: 5
+247709846685511            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709846688252            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2741ns           
+Current trace cpu: 5
+247709846688335            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3163ns           
+Current trace cpu: 5
+247709858392148            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  11ms             
+Current trace cpu: 5
+247709858392430            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709858395921            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3491ns           
+Current trace cpu: 5
+247709858396001            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3853ns           
+Current trace cpu: 5
+247709936009876            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  77ms             
+Current trace cpu: 5
+247709936010215            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709936013471            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3256ns           
+Current trace cpu: 5
+247709936013548            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3672ns           
+Current trace cpu: 5
+247709957950570            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  21ms             
+Current trace cpu: 5
+247709957950980            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247709957959640            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8660ns           
+Current trace cpu: 5
+247709957959992            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9422ns           
+Current trace cpu: 5
+247710085832702            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247710085833108            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710085841362            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8254ns           
+Current trace cpu: 5
+247710085841449            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8747ns           
+Current trace cpu: 5
+247710214210704            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  128ms            
+Current trace cpu: 5
+247710214211442            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710214220247            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8805ns           
+Current trace cpu: 5
+247710214220324            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9620ns           
+Current trace cpu: 5
+247710247329911            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  33ms             
+Current trace cpu: 5
+247710247330259            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710247332987            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2728ns           
+Current trace cpu: 5
+247710247333070            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3159ns           
+Current trace cpu: 5
+247710257085230            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9752us           
+Current trace cpu: 5
+247710257085526            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710257087771            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2245ns           
+Current trace cpu: 5
+247710257087854            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2624ns           
+Current trace cpu: 5
+247710303453279            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  46ms             
+Current trace cpu: 5
+247710303453683            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710303458387            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              4704ns           
+Current trace cpu: 5
+247710303458473            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5194ns           
+Current trace cpu: 5
+247710312746383            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9287us           
+Current trace cpu: 5
+247710312746561            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710312748688            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2127ns           
+Current trace cpu: 5
+247710312748766            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2383ns           
+Current trace cpu: 5
+247710342532910            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  29ms             
+Current trace cpu: 5
+247710342533367            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710342541648            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8281ns           
+Current trace cpu: 5
+247710342541725            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8815ns           
+Current trace cpu: 5
+247710470349720            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247710470350145            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710470357927            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7782ns           
+Current trace cpu: 5
+247710470358011            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8291ns           
+Current trace cpu: 5
+247710598216437            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247710598217027            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710598225574            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8547ns           
+Current trace cpu: 5
+247710598225668            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9231ns           
+Current trace cpu: 5
+247710678828325            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  80ms             
+Current trace cpu: 5
+247710678828694            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710678831623            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              2929ns           
+Current trace cpu: 5
+247710678831709            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3384ns           
+Current trace cpu: 5
+247710726132976            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  47ms             
+Current trace cpu: 5
+247710726133269            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710726140461            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7192ns           
+Current trace cpu: 5
+247710726140538            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7562ns           
+Current trace cpu: 5
+247710783658166            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  57ms             
+Current trace cpu: 5
+247710783658502            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710783661586            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3084ns           
+Current trace cpu: 5
+247710783661672            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3506ns           
+Current trace cpu: 5
+247710853986017            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  70ms             
+Current trace cpu: 5
+247710853986459            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710853995651            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              9192ns           
+Current trace cpu: 5
+247710853995786            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9769ns           
+Current trace cpu: 5
+247710878349557            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  24ms             
+Current trace cpu: 5
+247710878349776            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710878353932            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              4156ns           
+Current trace cpu: 5
+247710878354012            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4455ns           
+Current trace cpu: 5
+247710941759151            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  63ms             
+Current trace cpu: 5
+247710941759509            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710941762573            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3064ns           
+Current trace cpu: 5
+247710941763065            CPU=4      PID=31     COMM=ksoftirqd/4         PREEMPT                                               
+Current trace cpu: 5
+247710941764694            CPU=4      PID=31     COMM=ksoftirqd/4         DEQUEUE AFTER PREEMPTED              1629ns           
+Current trace cpu: 5
+247710941764824            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5673ns           
+Current trace cpu: 5
+247710982782864            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  41ms             
+Current trace cpu: 5
+247710982783207            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247710982790477            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              7270ns           
+Current trace cpu: 5
+247710982790563            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7699ns           
+Current trace cpu: 5
+247711039882209            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  57ms             
+Current trace cpu: 5
+247711039882489            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711039885544            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3055ns           
+Current trace cpu: 5
+247711039885621            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3412ns           
+Current trace cpu: 5
+247711110619091            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  70ms             
+Current trace cpu: 5
+247711110619505            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711110627583            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8078ns           
+Current trace cpu: 5
+247711110627671            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8580ns           
+Current trace cpu: 5
+247711205741376            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  95ms             
+Current trace cpu: 5
+247711205741854            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711205745467            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              3613ns           
+Current trace cpu: 5
+247711205745623            CPU=4      PID=31     COMM=ksoftirqd/4         PREEMPT                                               
+Current trace cpu: 5
+247711205747322            CPU=4      PID=31     COMM=ksoftirqd/4         DEQUEUE AFTER PREEMPTED              1699ns           
+Current trace cpu: 5
+247711205747459            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 6083ns           
+Current trace cpu: 5
+247711237885321            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  32ms             
+Current trace cpu: 5
+247711237885729            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711237894257            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8528ns           
+Current trace cpu: 5
+247711237894347            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9026ns           
+Current trace cpu: 5
+247711295638846            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  57ms             
+Current trace cpu: 5
+247711295639284            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711295643615            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              4331ns           
+Current trace cpu: 5
+247711295643702            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4856ns           
+Current trace cpu: 5
+247711324915203            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  29ms             
+Current trace cpu: 5
+247711324915489            CPU=4      PID=705    COMM=kworker/4:1H-kb     PREEMPT                                               
+Current trace cpu: 5
+247711324918707            CPU=4      PID=705    COMM=kworker/4:1H-kb     DEQUEUE AFTER PREEMPTED              3218ns           
+Current trace cpu: 5
+247711324918786            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 3583ns           
+Current trace cpu: 5
+247711366330052            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  41ms             
+Current trace cpu: 5
+247711366330448            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711366338763            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8315ns           
+Current trace cpu: 5
+247711366338856            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8804ns           
+Current trace cpu: 5
+247711494186431            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247711494186871            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711494195721            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8850ns           
+Current trace cpu: 5
+247711494195809            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9378ns           
+Current trace cpu: 5
+247711622073597            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247711622073977            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711622082225            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8248ns           
+Current trace cpu: 5
+247711622082310            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8713ns           
+Current trace cpu: 5
+247711749945443            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247711749945854            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711749954054            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8200ns           
+Current trace cpu: 5
+247711749954137            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8694ns           
+Current trace cpu: 5
+247711774330826            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  24ms             
+Current trace cpu: 5
+247711774331109            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711774424821            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              93us             
+Current trace cpu: 5
+247711774424956            CPU=4      PID=9200   COMM=kworker/4:0-ata     PREEMPT                                               
+Current trace cpu: 5
+247711774446809            CPU=4      PID=9200   COMM=kworker/4:0-ata     DEQUEUE AFTER PREEMPTED              21us             
+Current trace cpu: 5
+247711774447245            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 116us            
+Current trace cpu: 5
+247711784089175            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  9641us           
+Current trace cpu: 5
+247711784089514            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711784096427            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              6913ns           
+Current trace cpu: 5
+247711784096506            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7331ns           
+Current trace cpu: 5
+247711838301129            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  54ms             
+Current trace cpu: 5
+247711838301536            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711838306302            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              4766ns           
+Current trace cpu: 5
+247711838306391            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5262ns           
+Current trace cpu: 5
+247711878266586            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  39ms             
+Current trace cpu: 5
+247711878267040            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247711878275452            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8412ns           
+Current trace cpu: 5
+247711878275529            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8943ns           
+Current trace cpu: 5
+247712006099207            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  127ms            
+Current trace cpu: 5
+247712006099603            CPU=4      PID=8741   COMM=kworker/4:3-eve     PREEMPT                                               
+Current trace cpu: 5
+247712006107721            CPU=4      PID=8741   COMM=kworker/4:3-eve     DEQUEUE AFTER PREEMPTED              8118ns           
+Current trace cpu: 5
+247712006107810            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8603ns           
+Current trace cpu: 0
+247712134484316            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  128ms            
+Current trace cpu: 0
+247712134484703            CPU=4      PID=8741   COMM=kworker/4:3-kdm     PREEMPT                                               
+Current trace cpu: 0
+247712134493269            CPU=4      PID=8741   COMM=kworker/4:3-kdm     DEQUEUE AFTER PREEMPTED              8566ns           
+Current trace cpu: 0
+247712134493347            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9031ns           
+Current trace cpu: 0
+247712230649584            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  96ms             
+Current trace cpu: 0
+247712230649982            CPU=4      PID=30     COMM=migration/4         PREEMPT                                               
+Current trace cpu: 0
+247712230651807            CPU=4      PID=30     COMM=migration/4         DEQUEUE AFTER PREEMPTED              1825ns           
+Current trace cpu: 0
+247712230651891            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2307ns           
+Current trace cpu: 0
+247712262334756            CPU=4      PID=9128   COMM=test                WAIT AFTER EXECUTED                  31ms             
+Current trace cpu: 0
+247712262335146            CPU=4      PID=8741   COMM=kworker/4:3-kdm     PREEMPT                                               
+Current trace cpu: 0
+247712262343335            CPU=4      PID=8741   COMM=kworker/4:3-kdm     DEQUEUE AFTER PREEMPTED              8189ns           
+Current trace cpu: 0
+247712262343413            CPU=4      PID=9128   COMM=test                EXECUTE AFTER WAITED                 8657ns           
+Current trace cpu: 0
+247712264646560            CPU=4      PID=9128   COMM=test                DEQUEUE AFTER EXECUTED               2303us           
+Current trace cpu: 1
+247714267422144            CPU=0      PID=9128   COMM=test                MIGRATE                                               
+Current trace cpu: 1
+----------------------------
+247714267473999            CPU=0      PID=9128   COMM=test                ENQUEUE                                               
+Current trace cpu: 1
+247714267484830            CPU=0      PID=0      COMM=IDLE                PREEMPTED                            10831ns          
+Current trace cpu: 1
+247714267485187            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 11us             
+Current trace cpu: 1
+247714846033749            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  578ms            
+Current trace cpu: 1
+247714846034081            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247714846038455            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              4374ns           
+Current trace cpu: 1
+247714846038539            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4790ns           
+Current trace cpu: 1
+247715358014891            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  511ms            
+Current trace cpu: 1
+247715358015297            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247715358300422            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              285us            
+Current trace cpu: 1
+247715358300520            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 285us            
+Current trace cpu: 1
+247715870450583            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  512ms            
+Current trace cpu: 1
+247715870450919            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247715870458401            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              7482ns           
+Current trace cpu: 1
+247715870458506            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 7923ns           
+Current trace cpu: 1
+247716225741128            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  355ms            
+Current trace cpu: 1
+247716225741559            CPU=0      PID=11     COMM=migration/0         PREEMPT                                               
+Current trace cpu: 1
+247716225745122            CPU=0      PID=11     COMM=migration/0         DEQUEUE AFTER PREEMPTED              3563ns           
+Current trace cpu: 1
+247716225745204            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4076ns           
+Current trace cpu: 1
+247716894456931            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  668ms            
+Current trace cpu: 1
+247716894457349            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247716894466115            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              8766ns           
+Current trace cpu: 1
+247716894466247            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9316ns           
+Current trace cpu: 1
+247717405882686            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  511ms            
+Current trace cpu: 1
+247717405883053            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247717406165633            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              282us            
+Current trace cpu: 1
+247717406165719            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 283us            
+Current trace cpu: 1
+247717853909678            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  447ms            
+Current trace cpu: 1
+247717853910098            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247717853919458            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              9360ns           
+Current trace cpu: 1
+247717853919595            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 9917ns           
+Current trace cpu: 1
+247718015460181            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  161ms            
+Current trace cpu: 1
+247718015461034            CPU=0      PID=1439   COMM=sssd_nss            PREEMPT                                               
+Current trace cpu: 1
+247718015533604            CPU=0      PID=1439   COMM=sssd_nss            DEQUEUE AFTER PREEMPTED              72us             
+Current trace cpu: 1
+247718015533743            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 73us             
+Current trace cpu: 0
+247718612950016            CPU=0      PID=9128   COMM=test                DEQUEUE AFTER EXECUTED               597ms            
+Current trace cpu: 1
+----------------------------
+247720614223572            CPU=0      PID=9128   COMM=test                ENQUEUE                                               
+Current trace cpu: 1
+247720614239189            CPU=0      PID=0      COMM=IDLE                PREEMPTED                            15us             
+Current trace cpu: 1
+247720614239491            CPU=0      PID=1424   COMM=rtkit-daemon        PREEMPT                                               
+Current trace cpu: 1
+247720614266018            CPU=0      PID=1424   COMM=rtkit-daemon        DEQUEUE AFTER PREEMPTED              26us             
+Current trace cpu: 1
+247720614266227            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 42us             
+Current trace cpu: 1
+247720862043880            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  247ms            
+Current trace cpu: 1
+247720862044341            CPU=0      PID=8032   COMM=kworker/0:4-eve     PREEMPT                                               
+Current trace cpu: 1
+247720862088270            CPU=0      PID=8032   COMM=kworker/0:4-eve     DEQUEUE AFTER PREEMPTED              43us             
+Current trace cpu: 1
+247720862088433            CPU=0      PID=9128   COMM=test                EXECUTE AFTER WAITED                 44us             
+Current trace cpu: 2
+247721103540521            CPU=0      PID=9128   COMM=test                WAIT AFTER EXECUTED                  241ms            
+Current trace cpu: 2
+247721103540863            CPU=0      PID=11     COMM=migration/0         PREEMPT                                               
+Current trace cpu: 2
+247721103542391            CPU=1      PID=9128   COMM=test                MIGRATE                                               
+Current trace cpu: 2
+247721103564724            CPU=1      PID=0      COMM=IDLE                PREEMPTED                            22us             
+Current trace cpu: 2
+247721103564925            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 22us             
+Current trace cpu: 2
+247721154348280            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  50ms             
+Current trace cpu: 2
+247721154348511            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721154353178            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4667ns           
+Current trace cpu: 2
+247721154353257            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4977ns           
+Current trace cpu: 2
+247721206073411            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721206073833            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721206078361            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4528ns           
+Current trace cpu: 2
+247721206078439            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5028ns           
+Current trace cpu: 2
+247721258814808            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721258815274            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721258819899            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4625ns           
+Current trace cpu: 2
+247721258819976            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5168ns           
+Current trace cpu: 2
+247721311479548            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721311479974            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721311484170            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4196ns           
+Current trace cpu: 2
+247721311484254            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4706ns           
+Current trace cpu: 2
+247721363194607            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721363194963            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721363199219            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4256ns           
+Current trace cpu: 2
+247721363199296            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4689ns           
+Current trace cpu: 2
+247721414939424            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721414939793            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721414944265            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4472ns           
+Current trace cpu: 2
+247721414944348            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4924ns           
+Current trace cpu: 2
+247721467121940            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721467122377            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721467126483            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4106ns           
+Current trace cpu: 2
+247721467126567            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4627ns           
+Current trace cpu: 2
+247721479846227            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  12ms             
+Current trace cpu: 2
+247721479846512            CPU=1      PID=16     COMM=ksoftirqd/1         PREEMPT                                               
+Current trace cpu: 2
+247721479848649            CPU=1      PID=16     COMM=ksoftirqd/1         DEQUEUE AFTER PREEMPTED              2137ns           
+Current trace cpu: 2
+247721479848787            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2560ns           
+Current trace cpu: 2
+247721519366700            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  39ms             
+Current trace cpu: 2
+247721519366996            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721519371429            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4433ns           
+Current trace cpu: 2
+247721519371510            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4810ns           
+Current trace cpu: 2
+247721571097813            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721571098288            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721571102757            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4469ns           
+Current trace cpu: 2
+247721571102834            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5021ns           
+Current trace cpu: 2
+247721622838603            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721622839003            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721622843661            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4658ns           
+Current trace cpu: 2
+247721622843745            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5142ns           
+Current trace cpu: 2
+247721675531266            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721675531664            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721675536413            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4749ns           
+Current trace cpu: 2
+247721675536491            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5225ns           
+Current trace cpu: 2
+247721714573326            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  39ms             
+Current trace cpu: 2
+247721714573613            CPU=1      PID=1751   COMM=tuned               PREEMPT                                               
+Current trace cpu: 2
+247721714623402            CPU=1      PID=1751   COMM=tuned               DEQUEUE AFTER PREEMPTED              49us             
+Current trace cpu: 2
+247721714623518            CPU=1      PID=3028   COMM=pool                PREEMPT                                               
+Current trace cpu: 2
+247721714636817            CPU=1      PID=3028   COMM=pool                DEQUEUE AFTER PREEMPTED              13us             
+Current trace cpu: 2
+247721714636910            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 63us             
+Current trace cpu: 2
+247721726806277            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  12ms             
+Current trace cpu: 2
+247721726806557            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721726810546            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              3989ns           
+Current trace cpu: 2
+247721726810629            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4352ns           
+Current trace cpu: 2
+247721778987531            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721778987908            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721778991635            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              3727ns           
+Current trace cpu: 2
+247721778991718            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4187ns           
+Current trace cpu: 2
+247721831743461            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721831743832            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721831747679            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              3847ns           
+Current trace cpu: 2
+247721831747797            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4336ns           
+Current trace cpu: 2
+247721884401733            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247721884402050            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721884406294            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4244ns           
+Current trace cpu: 2
+247721884406379            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4646ns           
+Current trace cpu: 2
+247721936125252            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247721936125969            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721936130288            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4319ns           
+Current trace cpu: 2
+247721936130366            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5114ns           
+Current trace cpu: 2
+247721960058473            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  23ms             
+Current trace cpu: 2
+247721960058873            CPU=1      PID=3049   COMM=gnome-software      PREEMPT                                               
+Current trace cpu: 2
+247721960156253            CPU=1      PID=3049   COMM=gnome-software      DEQUEUE AFTER PREEMPTED              97us             
+Current trace cpu: 2
+247721960156433            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 97us             
+Current trace cpu: 2
+247721988810177            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  28ms             
+Current trace cpu: 2
+247721988810611            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247721988816102            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              5491ns           
+Current trace cpu: 2
+247721988816182            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 6005ns           
+Current trace cpu: 2
+247722041097513            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722041097919            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722041102692            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4773ns           
+Current trace cpu: 2
+247722041102780            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5267ns           
+Current trace cpu: 2
+247722093310666            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722093311036            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722093316357            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              5321ns           
+Current trace cpu: 2
+247722093316436            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5770ns           
+Current trace cpu: 2
+247722145035397            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722145035838            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722145040802            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4964ns           
+Current trace cpu: 2
+247722145040907            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5510ns           
+Current trace cpu: 2
+247722197264864            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722197265243            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722197269586            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4343ns           
+Current trace cpu: 2
+247722197269674            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4810ns           
+Current trace cpu: 2
+247722249095747            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722249096188            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722249100199            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4011ns           
+Current trace cpu: 2
+247722249100278            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4531ns           
+Current trace cpu: 2
+247722301278175            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722301278594            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722301282921            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4327ns           
+Current trace cpu: 2
+247722301283005            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4830ns           
+Current trace cpu: 2
+247722353104169            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722353104567            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722353109056            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4489ns           
+Current trace cpu: 2
+247722353109145            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4976ns           
+Current trace cpu: 2
+247722404733990            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722404734381            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722404739148            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4767ns           
+Current trace cpu: 2
+247722404739232            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5242ns           
+Current trace cpu: 2
+247722457475523            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722457475890            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722457479954            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4064ns           
+Current trace cpu: 2
+247722457480035            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4512ns           
+Current trace cpu: 2
+247722509199148            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722509199503            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722509203312            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              3809ns           
+Current trace cpu: 2
+247722509203398            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4250ns           
+Current trace cpu: 2
+247722560928966            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  51ms             
+Current trace cpu: 2
+247722560929237            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722560933529            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4292ns           
+Current trace cpu: 2
+247722560933608            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4642ns           
+Current trace cpu: 2
+247722613671306            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722613671739            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722613676468            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4729ns           
+Current trace cpu: 2
+247722613676547            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 5241ns           
+Current trace cpu: 2
+247722666334519            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  52ms             
+Current trace cpu: 2
+247722666334823            CPU=1      PID=803    COMM=xfsaild/dm-0        PREEMPT                                               
+Current trace cpu: 2
+247722666339177            CPU=1      PID=803    COMM=xfsaild/dm-0        DEQUEUE AFTER PREEMPTED              4354ns           
+Current trace cpu: 2
+247722666339255            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 4736ns           
+Current trace cpu: 2
+247722716111679            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  49ms             
+Current trace cpu: 2
+247722716112082            CPU=1      PID=1751   COMM=tuned               PREEMPT                                               
+Current trace cpu: 2
+247722716181082            CPU=1      PID=1751   COMM=tuned               DEQUEUE AFTER PREEMPTED              69us             
+Current trace cpu: 2
+247722716181235            CPU=1      PID=9128   COMM=test                EXECUTE AFTER WAITED                 69us             
+Current trace cpu: 3
+247723727602840            CPU=1      PID=9128   COMM=test                WAIT AFTER EXECUTED                  1011ms           
+Current trace cpu: 3
+247723727603159            CPU=1      PID=15     COMM=migration/1         PREEMPT                                               
+Current trace cpu: 3
+247723727604768            CPU=2      PID=9128   COMM=test                MIGRATE                                               
+Current trace cpu: 3
+247723727665703            CPU=2      PID=0      COMM=IDLE                PREEMPTED                            60us             
+Current trace cpu: 3
+247723727665883            CPU=2      PID=9128   COMM=test                EXECUTE AFTER WAITED                 61us             
+Current trace cpu: 3
+247724005565637            CPU=2      PID=9128   COMM=test                WAIT AFTER EXECUTED                  277ms            
+Current trace cpu: 3
+247724005566035            CPU=2      PID=3283   COMM=gmain               PREEMPT                                               
+Current trace cpu: 3
+247724005595837            CPU=2      PID=3283   COMM=gmain               DEQUEUE AFTER PREEMPTED              29us             
+Current trace cpu: 3
+247724005595962            CPU=2      PID=9128   COMM=test                EXECUTE AFTER WAITED                 30us             
+Current trace cpu: 0
+247724229196703            CPU=2      PID=9128   COMM=test                WAIT AFTER EXECUTED                  223ms            
+Current trace cpu: 0
+247724229197073            CPU=2      PID=20     COMM=migration/2         PREEMPT                                               
+Current trace cpu: 0
+247724229199299            CPU=2      PID=20     COMM=migration/2         DEQUEUE AFTER PREEMPTED              2226ns           
+Current trace cpu: 0
+247724229199383            CPU=2      PID=9128   COMM=test                EXECUTE AFTER WAITED                 2680ns           
+Current trace cpu: 0
+247724718202704            CPU=2      PID=9128   COMM=test                WAIT AFTER EXECUTED                  489ms            
+Current trace cpu: 0
+247724718203096            CPU=2      PID=3028   COMM=pool                PREEMPT                                               
+Current trace cpu: 0
+247724718222145            CPU=2      PID=3028   COMM=pool                DEQUEUE AFTER PREEMPTED              19us             
+Current trace cpu: 0
+247724718222249            CPU=2      PID=1751   COMM=tuned               PREEMPT                                               
+Current trace cpu: 0
+247724718305240            CPU=2      PID=1751   COMM=tuned               DEQUEUE AFTER PREEMPTED              82us             
+Current trace cpu: 0
+247724718305439            CPU=2      PID=9128   COMM=test                EXECUTE AFTER WAITED                 102us            
+Current trace cpu: 0
+247725068138961            CPU=2      PID=9128   COMM=test                DEQUEUE AFTER EXECUTED               349ms            
+Current trace cpu: 3
+----------------------------
+247727068381807            CPU=2      PID=9128   COMM=test                ENQUEUE                                               
+Current trace cpu: 3
+247727068400656            CPU=2      PID=0      COMM=IDLE                PREEMPTED                            18us             
+Current trace cpu: 3
+247727068401054            CPU=2      PID=9128   COMM=test                EXECUTE AFTER WAITED                 19us             

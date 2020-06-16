@@ -1,15 +1,12 @@
 //#define _GNU_SOURCE
 
 #include <argp.h>
-#include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <signal.h>
 #include <sched.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <linux/bpf.h>
 #include <locale.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -17,61 +14,69 @@
 #include <sys/resource.h>
 #include <sys/wait.h>
 #include <dirent.h>
-#include <bpf/libbpf.h>
 #include <bpf/bpf.h>
-//#include "bpf_load.h"
 #include "errno_helpers.h"
 #include "trace_helpers.h"
 #include "syscall_helpers.h"
 #include "task_detector.h"
 #include "task_detector.skel.h"
 
-//#define ROOT_CG	"/sys/fs/cgroup/cpu/"
-
-static int ui_map_fd;
-static int ti_map_fd;
-static int si_map_fd;
-static int start_map_fd;
-static int end_map_fd;
-static bool exiting;
-static int nr_cpus;
-static int trace_syscall;
-static int target;
-static struct task_detector_bpf *obj;
-
 const char *argp_program_version = "task_detector 0.1";
 const char *argp_program_bug_address = "<yun.wang@xxxxxxxxxxxxxxxxx>";
-const char argp_program_doc[] =
+static const char argp_program_doc[] =
 "Trace the related schedule events of a specified task.\n"
 "\n"
-"USAGE: task_detector [--help] [-p PID] [-s]\n"
+"USAGE: task_detector -p PID [-s]\n"
 "\n"
 "EXAMPLES:\n"
 "    runqslower -p 49870       	# trace pid 49870\n"
-"    runqslower -s    		# trace system call\n";
+"    runqslower -p 49870 -s    	# trace pid 49870 and system call\n";
 
 static const struct argp_option opts[] = {
 	{ "pid", 'p', "PID", 0, "Process PID to trace"},
-	{ "syscall", 's', NULL, 0, "Trace system call"},
+	{ "syscall", 's', NULL, 0, "Trace SYSCALL Info"},
 	{},
+};
+
+static struct env {
+	int ui_map_fd;
+	int ti_map_fd;
+	int si_map_fd;
+	int start_map_fd;
+	int end_map_fd;
+	bool exiting;
+	int nr_cpus;
+	int trace_syscall;
+	int target;
+} env = {
+	.exiting = false,
 };
 
 static error_t parse_arg(int key, char *arg, struct argp_state *state)
 {
 	int pid;
-
 	switch (key) {
 	case 'p':
-		errno = 0;
-		pid = strtol(arg, NULL, 10);
-		if (errno || pid <= 0) {
-			fprintf(stderr, "Invalid PID: %s\n", arg);
+		if(arg == NULL) {
+			fprintf(stderr, "PID is required\n");
 			argp_usage(state);
+		} else {
+			pid = strtol(arg, NULL, 10);
+			if (pid <= 0) {
+				fprintf(stderr, "Invalid PID: %s\n", arg);
+				argp_usage(state);
+			}
+			env.target = pid;
 		}
-		target = pid;
 		break;
 	case 's':
-		trace_syscall = 1;
+		env.trace_syscall = 1;
+		break;
+	case ARGP_KEY_END:
+		if (!env.target) {
+			fprintf(stderr, "No target PID\n");
+			argp_usage(state);
+		}
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -146,12 +151,12 @@ static int print_trace_info(int start, int end)
 	static struct trace_info ti_last;
 
 	for (key = start; key != end; key = (key + 1) % NR_ENTRY_MAX) {
-		char func[37];
+		char func[80];
 		struct trace_info ti;
 		struct si_key sik;
 		u64 siv;
 
-		if (bpf_map_lookup_elem(ti_map_fd, &key, &ti))
+		if (bpf_map_lookup_elem(env.ti_map_fd, &key, &ti))
 			continue;
 
 		time_to_str(ti.ts - ti_last.ts, d_str, sizeof(d_str));
@@ -167,7 +172,7 @@ static int print_trace_info(int start, int end)
 			pr_ti(&ti, "ENQUEUE", NULL);
 			break;
 		case TYPE_WAIT:
-			if (ti.pid == target) {
+			if (ti.pid == env.target) {
 				w_start = ti.ts;
 				pr_ti(&ti, "WAIT AFTER EXECUTED", d_str);
 			} else {
@@ -177,7 +182,7 @@ static int print_trace_info(int start, int end)
 			}
 			break;
 		case TYPE_EXECUTE:
-			if (ti.pid == target) {
+			if (ti.pid == env.target) {
 				time_to_str(ti.ts - w_start,
 						d_str, sizeof(d_str));
 				pr_ti(&ti, "EXECUTE AFTER WAITED", d_str);
@@ -187,7 +192,7 @@ static int print_trace_info(int start, int end)
 			}
 			break;
 		case TYPE_DEQUEUE:
-			if (ti.pid == target)
+			if (ti.pid == env.target)
 				pr_ti(&ti, "DEQUEUE AFTER EXECUTED", d_str);
 			else {
 				time_to_str(ti.ts - p_start,
@@ -200,7 +205,7 @@ static int print_trace_info(int start, int end)
 			sik.cpu = ti.cpu;
 			sik.pid = ti.pid;
 			sik.syscall = ti.syscall;
-			bpf_map_update_elem(si_map_fd, &sik, &siv, BPF_ANY);
+			bpf_map_update_elem(env.si_map_fd, &sik, &siv, BPF_ANY);
 			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] ENTER",
 					ti.syscall, comm_buf);
@@ -210,10 +215,10 @@ static int print_trace_info(int start, int end)
 			sik.cpu = ti.cpu;
 			sik.pid = ti.pid;
 			sik.syscall = ti.syscall;
-			if (bpf_map_lookup_elem(si_map_fd, &sik, &siv))
+			if (bpf_map_lookup_elem(env.si_map_fd, &sik, &siv))
 				break;
 			time_to_str(ti.ts - siv, d_str, sizeof(d_str));
-			bpf_map_delete_elem(si_map_fd, &sik);
+			bpf_map_delete_elem(env.si_map_fd, &sik);
 			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] TAKE %s TO EXIT",
 					ti.syscall, comm_buf, d_str);
@@ -243,30 +248,22 @@ static int setup_user_info(int pid)
 	}
 	memset(&ui, 0, sizeof(ui));
 	ui.pid = pid;
-	ui.trace_syscall = trace_syscall;
-	bpf_map_update_elem(ui_map_fd, &key, &ui, BPF_ANY);
+	ui.trace_syscall = env.trace_syscall;
+	bpf_map_update_elem(env.ui_map_fd, &key, &ui, BPF_ANY);
 
 	closedir(dir);
 
 	return 0;
 }
 
-static inline void print_help(char *cmd)
-{
-	fprintf(stderr,
-		"Usage: %s [options]\n"
-		"\t-p PID\n"
-		"\t-s Trace SYSCALL Info\n"
-		, cmd);
-}
-
 static void int_exit(int sig)
 {
-	exiting = true;
+	env.exiting = true;
 }
 
 int main(int argc, char **argv)
 {
+	struct task_detector_bpf *obj;
 	static const struct argp argp = {
 		.options = opts,
 		.parser = parse_arg,
@@ -274,82 +271,85 @@ int main(int argc, char **argv)
 	};
 	
 	int err;
-	exiting = false;
 
 	err = argp_parse(&argp, argc, argv, 0, NULL, NULL);
 	if (err)
 		return err;
 
-	if (!target) {
-		print_help(argv[0]);
-		return 1;
-	}
-
-	printf("Start detecting task, pid %d\n",target);
-
 	init_syscall_names();
-
-	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-	if (nr_cpus > NR_CPU_MAX) {
+	
+	/* Check cpu number */
+	env.nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+	if (env.nr_cpus > NR_CPU_MAX) {
 		printf("Support Maximum %d cpus\n", NR_CPU_MAX);
 		goto freename;
 	}
 	
+	/* Increase rlimit */
 	err = bump_memlock_rlimit();
 	if (err) {
 		fprintf(stderr, "failed to increase rlimit: %d\n", err);
 		goto freename;
 	}
 	
+	/* Open bpf object */
 	obj = task_detector_bpf__open();
 	if(!obj){
 		fprintf(stderr, "failed to open and/or load BPF object\n");
 		goto freename;
 	}
 
+	/* Load bpf program */
 	err = task_detector_bpf__load(obj);
 	if(err){
 		fprintf(stderr, "failed to load BPF object: %d\n", err);
 		goto cleanup;
 	}
 	
+	/* Attach bpf program */
 	err = task_detector_bpf__attach(obj);
 	if (err) {
 		fprintf(stderr, "failed to attach BPF programs\n");
 		goto cleanup;
 	}
 
-	ui_map_fd = bpf_map__fd(obj->maps.user_info_maps);
-	ti_map_fd = bpf_map__fd(obj->maps.trace_info_maps);
-	si_map_fd = bpf_map__fd(obj->maps.syscall_info_maps);
-	start_map_fd = bpf_map__fd(obj->maps.start_maps);
-	end_map_fd = bpf_map__fd(obj->maps.end_maps);
+	/* Setup global map fd */
+	env.ui_map_fd = bpf_map__fd(obj->maps.user_info_maps);
+	env.ti_map_fd = bpf_map__fd(obj->maps.trace_info_maps);
+	env.si_map_fd = bpf_map__fd(obj->maps.syscall_info_maps);
+	env.start_map_fd = bpf_map__fd(obj->maps.start_maps);
+	env.end_map_fd = bpf_map__fd(obj->maps.end_maps);
 
-	if (setup_user_info(target)) {
-		printf("Illegal Target %d\n", target);
+	/* Setip user info */
+	if (setup_user_info(env.target)) {
+		printf("Illegal Target %d\n", env.target);
 		goto cleanup;
 	}
-		
+	
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 
+	printf("Start tracing target task, pid %d\n", env.target);
+	if (env.trace_syscall)
+		printf("record SYSCALL\n");
+	
+	/* main: print trace info */
 	while (1) {
-		if (exiting)
+		if (env.exiting)
 			goto cleanup;
 		int key = 0, start = 0, end = 0;
 		struct user_info ui = {
 			.exit = 0,
 		};
 
-		bpf_map_lookup_elem(ui_map_fd, &key, &ui);
+		bpf_map_lookup_elem(env.ui_map_fd, &key, &ui);
 		if (ui.exit) {
-			printf("Target \"%d\" Destroyed\n", target);
+			printf("Target \"%d\" Destroyed\n", env.target);
 			goto cleanup;
 		}
 
-		bpf_map_lookup_elem(start_map_fd, &key, &start);
-		bpf_map_lookup_elem(end_map_fd, &key, &end);
-
+		bpf_map_lookup_elem(env.start_map_fd, &key, &start);
+		bpf_map_lookup_elem(env.end_map_fd, &key, &end);
 		if (start == end) {
 			sleep(1);
 			continue;
@@ -357,7 +357,7 @@ int main(int argc, char **argv)
 
 		start = print_trace_info(start, end);
 
-		bpf_map_update_elem(start_map_fd, &key, &start, BPF_ANY);
+		bpf_map_update_elem(env.start_map_fd, &key, &start, BPF_ANY);
 	}
 
 cleanup:
