@@ -3,9 +3,10 @@ Task Detector
 
 This is a tool to trace the related schedule events of a specified task, eg the migration, sched in/out, wakeup and sleep/block.
 
-The event was translated into sentence to be more readable, by execute command 'task_detector -p 49870' we continually tracing the schedule events related to 'top' like:
+The event was translated into sentence to be more readable, by execute command 'task_detector -p 24104' we continually tracing the schedule events related to 'top' like:
 
-
+```Shell
+# task_detector -p 24104
 Start tracing target task, pid 24104
 ----------------------------
 102770938643193            CPU=1      PID=24104  COMM=top                 ENQUEUE                                               
@@ -17,6 +18,7 @@ Start tracing target task, pid 24104
 102770949153470            CPU=1      PID=24104  COMM=top                 EXECUTE AFTER WAITED                 3879ns           
 102770949277377            CPU=1      PID=24104  COMM=top                 DEQUEUE AFTER EXECUTED               123us    
 ----------------------------
+```
 
 This could be helpful on debugging the competition on CPU resource, to find out who has stolen the CPU and how much it stolen.
 
