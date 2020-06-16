@@ -23,3 +23,23 @@ Start tracing target task, pid 24104
 This could be helpful on debugging the competition on CPU resource, to find out who has stolen the CPU and how much it stolen.
 
 It can also tracing the syscall by append options -s.
+
+```Shell
+Start tracing target task, pid 24104
+Include SYSCALL
+----------------------------
+104043332442246            CPU=2      PID=24104  COMM=top                 ENQUEUE                                               
+104043332475329            CPU=2      PID=0      COMM=IDLE                PREEMPTED                            33us             
+104043332476101            CPU=2      PID=24104  COMM=top                 EXECUTE AFTER WAITED                 33us             
+104043332525807            CPU=2      PID=24104  COMM=top                 SC [257:openat] ENTER                                 
+104043332570577            CPU=2      PID=24104  COMM=top                 SC [257:openat] TAKE 44us TO EXIT                     
+104043332577193            CPU=2      PID=24104  COMM=top                 SC [5:fstat] ENTER                                    
+104043332582304            CPU=2      PID=24104  COMM=top                 SC [5:fstat] TAKE 5111ns TO EXIT                      
+104043332599968            CPU=2      PID=24104  COMM=top                 SC [3:close] ENTER                                    
+104043332602472            CPU=2      PID=24104  COMM=top                 SC [3:close] TAKE 2504ns TO EXIT                      
+104043332618210            CPU=2      PID=24104  COMM=top                 SC [8:lseek] ENTER                                    
+104043332624106            CPU=2      PID=24104  COMM=top                 SC [8:lseek] TAKE 5896ns TO EXIT                      
+104043332716699            CPU=2      PID=24104  COMM=top                 SC [257:openat] ENTER                                 
+104043332744398            CPU=2      PID=24104  COMM=top                 SC [257:openat] TAKE 27us TO EXIT                    
+...
+``` 

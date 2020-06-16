@@ -253,11 +253,10 @@ int bpf_trace_sys_exit(struct trace_event_raw_sys_exit *args)
 	}, *tip;
 	struct user_info *ui = get_user_info();
 
-	if (args->id && ui && ui->trace_syscall && should_trace(ti.cpu + 1))
+	if (args->id && ui && ui->trace_syscall && should_trace(ti.cpu))
 		add_trace(ti);
 
 	return 0;
 }
 
 char _license[] SEC("license") = "GPL";
-//u32 _version SEC("version") = LINUX_VERSION_CODE;

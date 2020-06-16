@@ -331,7 +331,7 @@ int main(int argc, char **argv)
 
 	printf("Start tracing target task, pid %d\n", env.target);
 	if (env.trace_syscall)
-		printf("record SYSCALL\n");
+		printf("Include SYSCALL\n");
 	
 	/* main: print trace info */
 	while (1) {
