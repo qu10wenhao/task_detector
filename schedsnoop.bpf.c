@@ -41,9 +41,10 @@ static inline int should_trace(int cpu)
 	return (trace_on == cpu + 1);
 }
 
-static inline void add_trace(void *ctx, struct trace_info ti)
+static inline void add_trace(void *ctx, struct trace_info* ti)
 {
-	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &ti, sizeof(ti));
+	ti->ts = bpf_ktime_get_ns();
+	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, ti, sizeof(*ti));
 }
 
 SEC("tp_btf/sched_process_exit")
@@ -75,8 +76,8 @@ int handle__sched_migrate_task(u64 *ctx)
 	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));	
 
 	set_trace_on(dest_cpu);
-
-	add_trace(ctx, ti);
+	
+	add_trace(ctx, &ti);
 
 	return 0;
 }
@@ -99,7 +100,7 @@ int handle__sched_wakeup(u64 *ctx)
 
 	set_trace_on(p->wake_cpu);
 
-	add_trace(ctx, ti);
+	add_trace(ctx, &ti);
 
 	return 0;
 }
@@ -126,7 +127,7 @@ int handle__sched_switch(u64 *ctx)
 
 		ti.pid = targ_pid;
 		ti.type = TYPE_MIGRATE;
-		add_trace(ctx, ti);
+		add_trace(ctx, &ti);
 	}
 
 	if (prev->state != TASK_RUNNING &&
@@ -139,7 +140,7 @@ int handle__sched_switch(u64 *ctx)
 
 	ti.pid = prev->pid;
 	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), prev->comm);
-	add_trace(ctx, ti);
+	add_trace(ctx, &ti);
 
 	if (!should_trace(ti.cpu))
 		return 0;
@@ -147,7 +148,7 @@ int handle__sched_switch(u64 *ctx)
 	ti.type = TYPE_EXECUTE;
 	ti.pid = next->pid;
 	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), next->comm);
-	add_trace(ctx, ti);
+	add_trace(ctx, &ti);
 
 	return 0;
 }
@@ -164,7 +165,7 @@ int bpf_trace_sys_enter(struct trace_event_raw_sys_enter *args)
 
 	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
 	if (args->id && trace_syscall && should_trace(ti.cpu))
-		add_trace(args, ti);
+		add_trace(args, &ti);
 
 	return 0;
 }
@@ -181,7 +182,7 @@ int bpf_trace_sys_exit(struct trace_event_raw_sys_exit *args)
 
 	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
 	if (args->id && trace_syscall && should_trace(ti.cpu))
-		add_trace(args, ti);
+		add_trace(args, &ti);
 
 	return 0;
 }

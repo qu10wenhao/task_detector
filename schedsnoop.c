@@ -111,9 +111,10 @@ static inline int time_to_str(u64 ns, char *buf, size_t len)
 
 static inline void pr_ti(struct trace_info *ti, char *opt, char *delay)
 {
-
-	printf("%-27lluCPU=%-7dPID=%-7dCOMM=%-20s%-37s%-17s\n",
-				ti->ts, ti->cpu, ti->pid, ti->comm, opt,
+	char buf[27];
+	snprintf(buf, sizeof(buf), "%lluus", ti->ts / NS_IN_US);
+	printf("%-27sCPU=%-7dPID=%-7dCOMM=%-20s%-37s%-17s\n",
+				buf, ti->cpu, ti->pid, ti->comm, opt,
 				delay ? delay : "");
 }
 
@@ -244,7 +245,7 @@ int main(int argc, char **argv)
 	
 	/* Open bpf object */
 	obj = schedsnoop_bpf__open();
-	if(!obj){
+	if (!obj) {
 		fprintf(stderr, "failed to open and/or load BPF object\n");
 		goto freename;
 	}
@@ -255,7 +256,7 @@ int main(int argc, char **argv)
 	
 	/* Load bpf program */
 	err = schedsnoop_bpf__load(obj);
-	if(err){
+	if (err) {
 		fprintf(stderr, "failed to load BPF object: %d\n", err);
 		goto cleanup;
 	}
@@ -289,11 +290,11 @@ int main(int argc, char **argv)
 	}
 	
 	/* main: poll */
-	while(!exiting && !obj->bss->targ_exit && \
+	while (!exiting && !obj->bss->targ_exit && \
 			(err = perf_buffer__poll(pb, 100)) >= 0);
-	if(exiting)
+	if (exiting)
 		goto cleanup;
-	if(obj->bss->targ_exit){
+	if (obj->bss->targ_exit) {
 		printf("Target %d Destroyed!\n", env.target);
 		goto cleanup;
 	}
