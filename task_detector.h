@@ -6,6 +6,10 @@
 #define NR_ENTRY_MAX		10000
 #define NR_CPU_MAX		512
 #define TASK_COMM_LEN		16
+#define NS_IN_SEC		1000000000LLU
+#define NS_IN_MS		1000000LLU
+#define NS_IN_US		1000LLU
+
 
 typedef unsigned long long u64;
 typedef int pid_t;
@@ -20,19 +24,13 @@ enum {
 	TYPE_SYSCALL_EXIT,
 };
 
-struct user_info {
-	pid_t pid;
-	int exit;
-	int trace_syscall;
-};
-
 struct trace_info {
 	int type;
 	int cpu;
 	int syscall;
 	pid_t pid;
 	u64 ts;
-	char comm[16];
+	char comm[TASK_COMM_LEN];
 };
 
 struct si_key {

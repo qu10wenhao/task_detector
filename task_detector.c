@@ -46,18 +46,16 @@ static const struct argp_option opts[] = {
 };
 
 static struct env {
-	int ui_map_fd;
-	int ti_map_fd;
-	int si_map_fd;
-	int start_map_fd;
-	int end_map_fd;
-	bool exiting;
 	int nr_cpus;
 	int trace_syscall;
 	int target;
-} env = {
-	.exiting = false,
-};
+} env;
+
+int ti_map_fd;
+int si_map_fd;
+int start_map_fd;
+int end_map_fd;
+bool exiting = false;
 
 static error_t parse_arg(int key, char *arg, struct argp_state *state)
 {
@@ -91,61 +89,26 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
 	return 0;
 }
 
-
-static inline int get_comm(int pid, char comm[])
-{
-	int fd, ret = 1;
-	char path_buf[512];
-
-	comm[0] = '\0';
-
-	if (!pid) {
-		strcpy(comm, "IDLE");
-		return 0;
-	}
-
-	snprintf(path_buf, sizeof(path_buf), "/proc/%d/comm", pid);
-	fd = open(path_buf, O_RDONLY);
-	if (fd) {
-		int cnt;
-
-		cnt = read(fd, comm, 16);
-		if (cnt > 0) {
-			comm[cnt - 1] = '\0';
-			ret = 0;
-		}
-	}
-	close(fd);
-	return ret;
-}
-
 static inline int time_to_str(u64 ns, char *buf, size_t len)
 {
-	u64 us = ns / 1000;
-	u64 ms = us / 1000;
-	u64 s = ms / 1000;
 
-	if (s > 10)
-		snprintf(buf, len, "%llus", s);
-	else if (ms > 10)
-		snprintf(buf, len, "%llums", ms);
-	else if (us > 10)
-		snprintf(buf, len, "%lluus", us);
+	if (ns > 10 * NS_IN_SEC)
+		snprintf(buf, len, "%llus", ns / NS_IN_SEC);
+	else if (ns > 10 * NS_IN_MS)
+		snprintf(buf, len, "%llums", ns / NS_IN_MS);
+	else if (ns > 10 * NS_IN_US)
+		snprintf(buf, len, "%lluus", ns / NS_IN_US);
 	else
 		snprintf(buf, len, "%lluns", ns);
 
-	return (s || ms > 10);
+	return 0;
 }
 
 static inline void pr_ti(struct trace_info *ti, char *opt, char *delay)
 {
-	char comm[16];
-
-	if (get_comm(ti->pid, comm))
-		memcpy(comm, ti->comm, sizeof(comm));
 
 	printf("%-27lluCPU=%-7dPID=%-7dCOMM=%-20s%-37s%-17s\n",
-				ti->ts, ti->cpu, ti->pid, comm, opt,
+				ti->ts, ti->cpu, ti->pid, ti->comm, opt,
 				delay ? delay : "");
 }
 
@@ -163,7 +126,7 @@ static int print_trace_info(int start, int end)
 		struct si_key sik;
 		u64 siv;
 
-		if (bpf_map_lookup_elem(env.ti_map_fd, &key, &ti))
+		if (bpf_map_lookup_elem(ti_map_fd, &key, &ti))
 			continue;
 
 		time_to_str(ti.ts - ti_last.ts, d_str, sizeof(d_str));
@@ -212,7 +175,7 @@ static int print_trace_info(int start, int end)
 			sik.cpu = ti.cpu;
 			sik.pid = ti.pid;
 			sik.syscall = ti.syscall;
-			bpf_map_update_elem(env.si_map_fd, &sik, &siv, BPF_ANY);
+			bpf_map_update_elem(si_map_fd, &sik, &siv, BPF_ANY);
 			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] ENTER",
 					ti.syscall, comm_buf);
@@ -222,10 +185,10 @@ static int print_trace_info(int start, int end)
 			sik.cpu = ti.cpu;
 			sik.pid = ti.pid;
 			sik.syscall = ti.syscall;
-			if (bpf_map_lookup_elem(env.si_map_fd, &sik, &siv))
+			if (bpf_map_lookup_elem(si_map_fd, &sik, &siv))
 				break;
 			time_to_str(ti.ts - siv, d_str, sizeof(d_str));
-			bpf_map_delete_elem(env.si_map_fd, &sik);
+			bpf_map_delete_elem(si_map_fd, &sik);
 			syscall_name(ti.syscall, comm_buf, sizeof(comm_buf));
 			snprintf(func, sizeof(func), "SC [%d:%s] TAKE %s TO EXIT",
 					ti.syscall, comm_buf, d_str);
@@ -241,31 +204,9 @@ static int print_trace_info(int start, int end)
 	return end;
 }
 
-static int setup_user_info(int pid)
-{
-	int key = 0;
-	DIR *dir;
-	char buf[256];
-	struct user_info ui;
-	snprintf(buf, sizeof(buf), "/proc/%d", pid);
-	dir = opendir(buf);
-	if (!dir) {
-		printf("Open %s failed: %s\n", buf, strerror(errno));
-		return -1;
-	}
-	memset(&ui, 0, sizeof(ui));
-	ui.pid = pid;
-	ui.trace_syscall = env.trace_syscall;
-	bpf_map_update_elem(env.ui_map_fd, &key, &ui, BPF_ANY);
-
-	closedir(dir);
-
-	return 0;
-}
-
 static void int_exit(int sig)
 {
-	env.exiting = true;
+	exiting = true;
 }
 
 int main(int argc, char **argv)
@@ -306,6 +247,10 @@ int main(int argc, char **argv)
 		goto freename;
 	}
 
+	/* initialize global data (filtering options) */
+	obj->rodata->targ_pid = env.target;
+	obj->rodata->trace_syscall = env.trace_syscall;
+	
 	/* Load bpf program */
 	err = task_detector_bpf__load(obj);
 	if(err){
@@ -319,19 +264,12 @@ int main(int argc, char **argv)
 		fprintf(stderr, "failed to attach BPF programs\n");
 		goto cleanup;
 	}
-
+	
 	/* Setup global map fd */
-	env.ui_map_fd = bpf_map__fd(obj->maps.user_info_maps);
-	env.ti_map_fd = bpf_map__fd(obj->maps.trace_info_maps);
-	env.si_map_fd = bpf_map__fd(obj->maps.syscall_info_maps);
-	env.start_map_fd = bpf_map__fd(obj->maps.start_maps);
-	env.end_map_fd = bpf_map__fd(obj->maps.end_maps);
-
-	/* Setip user info */
-	if (setup_user_info(env.target)) {
-		printf("Illegal Target %d\n", env.target);
-		goto cleanup;
-	}
+	ti_map_fd = bpf_map__fd(obj->maps.trace_info_maps);
+	si_map_fd = bpf_map__fd(obj->maps.syscall_info_maps);
+	start_map_fd = bpf_map__fd(obj->maps.start_maps);
+	end_map_fd = bpf_map__fd(obj->maps.end_maps);
 	
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
@@ -343,21 +281,17 @@ int main(int argc, char **argv)
 	
 	/* main: print trace info */
 	while (1) {
-		if (env.exiting)
+		if (exiting)
 			goto cleanup;
 		int key = 0, start = 0, end = 0;
-		struct user_info ui = {
-			.exit = 0,
-		};
 
-		bpf_map_lookup_elem(env.ui_map_fd, &key, &ui);
-		if (ui.exit) {
+		if (obj->bss->targ_exit) {
 			printf("Target \"%d\" Destroyed\n", env.target);
 			goto cleanup;
 		}
 
-		bpf_map_lookup_elem(env.start_map_fd, &key, &start);
-		bpf_map_lookup_elem(env.end_map_fd, &key, &end);
+		bpf_map_lookup_elem(start_map_fd, &key, &start);
+		bpf_map_lookup_elem(end_map_fd, &key, &end);
 		if (start == end) {
 			sleep(1);
 			continue;
@@ -365,7 +299,7 @@ int main(int argc, char **argv)
 
 		start = print_trace_info(start, end);
 
-		bpf_map_update_elem(env.start_map_fd, &key, &start, BPF_ANY);
+		bpf_map_update_elem(start_map_fd, &key, &start, BPF_ANY);
 	}
 
 cleanup:
