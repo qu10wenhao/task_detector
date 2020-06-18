@@ -11,6 +11,7 @@ ARCH := $(shell uname -m | sed 's/x86_64/x86/')
 
 APPS = \
 	task_detector \
+	cgroup_test \
 	#
 
 COMMON_OBJ = \
