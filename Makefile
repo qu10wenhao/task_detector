@@ -10,7 +10,7 @@ CFLAGS := -g -O2 -Wall
 ARCH := $(shell uname -m | sed 's/x86_64/x86/')
 
 APPS = \
-	task_detector \
+	schedsnoop \
 	cgroup_test \
 	#
 

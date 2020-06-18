@@ -2,7 +2,7 @@
 // Copyright (c) 2020 Alibaba Cloud
 #include "vmlinux.h"
 #include <bpf/bpf_helpers.h>
-#include "task_detector.h"
+#include "schedsnoop.h"
 
 #define DEBUG_ON 0
 #define TASK_RUNNING 0x0000
@@ -10,15 +10,14 @@
 
 const volatile pid_t targ_pid = 0;
 const volatile int trace_syscall = 0;
-volatile int targ_exit = 0;
+volatile bool targ_exit = false;
 volatile int trace_on = 0;
 
 struct{
-	__uint(type, BPF_MAP_TYPE_ARRAY);
-	__uint(max_entries, NR_ENTRY_MAX);
-	__type(key, int);
-	__type(value, struct trace_info);
-} trace_info_maps SEC(".maps");
+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+	__uint(key_size, sizeof(u32));
+	__uint(value_size, sizeof(u32));
+} events SEC(".maps");
 
 struct{
 	__uint(type, BPF_MAP_TYPE_HASH);
@@ -26,20 +25,6 @@ struct{
 	__type(key, struct si_key);
 	__type(value, u64);
 } syscall_info_maps SEC(".maps");
-
-struct{
-	__uint(type, BPF_MAP_TYPE_ARRAY);
-	__uint(max_entries, 1);
-	__type(key, int);
-	__type(value, int);
-} start_maps SEC(".maps");
-
-struct{
-	__uint(type, BPF_MAP_TYPE_ARRAY);
-	__uint(max_entries, 1);
-	__type(key, int);
-	__type(value, int);
-} end_maps SEC(".maps");
 
 static inline void set_trace_on(int cpu)
 {
@@ -56,34 +41,9 @@ static inline int should_trace(int cpu)
 	return (trace_on == cpu + 1);
 }
 
-static inline void add_trace(struct trace_info ti)
+static inline void add_trace(void *ctx, struct trace_info ti)
 {
-	int orig_end, key = 0;
-	struct trace_info *tip;
-	int *start, *end;
-
-	start = bpf_map_lookup_elem(&start_maps, &key);
-	end = bpf_map_lookup_elem(&end_maps, &key);
-
-	if (!start || !end)
-		return;
-
-	orig_end = *end;
-	*end = (*end + 1);
-
-	if (*end == NR_ENTRY_MAX)
-		*end = 0;
-
-	if (*end == *start)
-		return;
-	ti.ts = bpf_ktime_get_ns();
-
-	if (ti.type == TYPE_SYSCALL_ENTER ||
-	    ti.type == TYPE_SYSCALL_EXIT ||
-	    ti.type == TYPE_WAIT ||
-	    ti.type == TYPE_DEQUEUE)
-		bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
-	bpf_map_update_elem(&trace_info_maps, &orig_end, &ti, 0);
+	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &ti, sizeof(ti));
 }
 
 SEC("tp_btf/sched_process_exit")
@@ -92,7 +52,7 @@ int handle__sched_process_exit(u64 *ctx)
 	struct task_struct *p = (void *)ctx[0];
 
 	if (targ_pid && targ_pid == p->pid)
-		targ_exit = 1;
+		targ_exit = true;
 
 	return 0;
 }
@@ -116,7 +76,7 @@ int handle__sched_migrate_task(u64 *ctx)
 
 	set_trace_on(dest_cpu);
 
-	add_trace(ti);
+	add_trace(ctx, ti);
 
 	return 0;
 }
@@ -139,7 +99,7 @@ int handle__sched_wakeup(u64 *ctx)
 
 	set_trace_on(p->wake_cpu);
 
-	add_trace(ti);
+	add_trace(ctx, ti);
 
 	return 0;
 }
@@ -166,7 +126,7 @@ int handle__sched_switch(u64 *ctx)
 
 		ti.pid = targ_pid;
 		ti.type = TYPE_MIGRATE;
-		add_trace(ti);
+		add_trace(ctx, ti);
 	}
 
 	if (prev->state != TASK_RUNNING &&
@@ -179,7 +139,7 @@ int handle__sched_switch(u64 *ctx)
 
 	ti.pid = prev->pid;
 	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), prev->comm);
-	add_trace(ti);
+	add_trace(ctx, ti);
 
 	if (!should_trace(ti.cpu))
 		return 0;
@@ -187,7 +147,7 @@ int handle__sched_switch(u64 *ctx)
 	ti.type = TYPE_EXECUTE;
 	ti.pid = next->pid;
 	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), next->comm);
-	add_trace(ti);
+	add_trace(ctx, ti);
 
 	return 0;
 }
@@ -204,7 +164,7 @@ int bpf_trace_sys_enter(struct trace_event_raw_sys_enter *args)
 
 	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
 	if (args->id && trace_syscall && should_trace(ti.cpu))
-		add_trace(ti);
+		add_trace(args, ti);
 
 	return 0;
 }
@@ -221,7 +181,7 @@ int bpf_trace_sys_exit(struct trace_event_raw_sys_exit *args)
 
 	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
 	if (args->id && trace_syscall && should_trace(ti.cpu))
-		add_trace(ti);
+		add_trace(args, ti);
 
 	return 0;
 }
