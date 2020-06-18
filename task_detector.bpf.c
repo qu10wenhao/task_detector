@@ -135,9 +135,7 @@ int handle__sched_wakeup(u64 *ctx)
 		.type = TYPE_ENQUEUE,
 	};
 
-	//bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
-	for(int i=0;i<TASK_COMM_LEN;i++)
-		ti.comm[i] = p->comm[i];
+	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), p->comm);
 
 	set_trace_on(p->wake_cpu);
 
@@ -180,7 +178,7 @@ int handle__sched_switch(u64 *ctx)
 		ti.type = TYPE_WAIT;
 
 	ti.pid = prev->pid;
-	bpf_get_current_comm(&ti.comm, sizeof(ti.comm));
+	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), prev->comm);
 	add_trace(ti);
 
 	if (!should_trace(ti.cpu))
@@ -188,8 +186,7 @@ int handle__sched_switch(u64 *ctx)
 
 	ti.type = TYPE_EXECUTE;
 	ti.pid = next->pid;
-	for(int i=0;i<TASK_COMM_LEN;i++)
-		ti.comm[i] = next->comm[i];
+	bpf_probe_read_kernel_str(&ti.comm, sizeof(ti.comm), next->comm);
 	add_trace(ti);
 
 	return 0;
