@@ -138,13 +138,15 @@ static inline void pr_ti(struct trace_info *ti, char *opt, char *delay)
 	char buf[32];
 	if (env.debug) {
 		snprintf(buf, sizeof(buf), "%llu", ti->ts);
-	} else {
-		time_to_real_time(ti->ts, buf, sizeof(buf));
-	}
-
-	printf("%-32sCPU=%-7dTID=%-7dCOMM=%-20s%-37s%-17s\n",
+		printf("%-20sCPU=%-7dTID=%-7dCOMM=%-20s%-37s%-17s\n",
 				buf, ti->cpu, ti->tid, ti->comm, opt,
 				delay ? delay : "");
+	} else {
+		time_to_real_time(ti->ts, buf, sizeof(buf));
+		printf("%-32sCPU=%-7dTID=%-7dCOMM=%-20s%-37s%-17s\n",
+				buf, ti->cpu, ti->tid, ti->comm, opt,
+				delay ? delay : "");
+	}
 }
 
 void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)

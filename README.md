@@ -46,12 +46,12 @@ Add debug option -d could print raw timestamp
 Start tracing schedule events 
 Target thread ID 4314
 ----------------------------
-400231700673269                 CPU=2      TID=4314   COMM=test                ENQUEUE                                               
-400231700742401                 CPU=2      TID=0      COMM=swapper/2           PREEMPTED                            69us             
-400231700747527                 CPU=2      TID=24009  COMM=kworker/2:1         PREEMPT                                               
-400231701020508                 CPU=2      TID=24009  COMM=kworker/2:1         DEQUEUE AFTER PREEMPTED              272us            
-400231701028563                 CPU=2      TID=24114  COMM=kworker/2:0         PREEMPT                                               
-400231701090181                 CPU=2      TID=24114  COMM=kworker/2:0         DEQUEUE AFTER PREEMPTED              61us             
-400231701095608                 CPU=2      TID=4314   COMM=test                EXECUTE AFTER WAITED                 422us            
+400231700673269      CPU=2      TID=4314   COMM=test                ENQUEUE                                               
+400231700742401      CPU=2      TID=0      COMM=swapper/2           PREEMPTED                            69us             
+400231700747527      CPU=2      TID=24009  COMM=kworker/2:1         PREEMPT                                               
+400231701020508      CPU=2      TID=24009  COMM=kworker/2:1         DEQUEUE AFTER PREEMPTED              272us            
+400231701028563      CPU=2      TID=24114  COMM=kworker/2:0         PREEMPT                                               
+400231701090181      CPU=2      TID=24114  COMM=kworker/2:0         DEQUEUE AFTER PREEMPTED              61us             
+400231701095608      CPU=2      TID=4314   COMM=test                EXECUTE AFTER WAITED                 422us            
 ...
 ``` 
