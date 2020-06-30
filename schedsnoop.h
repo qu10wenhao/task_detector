@@ -26,9 +26,26 @@ struct trace_info {
 	char comm[TASK_COMM_LEN];
 };
 
-struct si_key {
+struct ti_key {
 	int cpu;
 	int syscall;
-	pid_t pid;
+	pid_t tid;
+	char comm[TASK_COMM_LEN];
+};
+
+struct stat_info {
+	__u64 total;
+	__u64 longest;
+	int count;
+	int padding;
+};
+
+struct stat_info_node {
+	int cpu;
+	pid_t tid;
+	int count;
+	__u64 avg;
+	__u64 longest;
+	char comm[4 * TASK_COMM_LEN];
 };
 #endif /* __SCHEDSNOOP_H */
