@@ -71,6 +71,7 @@ bool volatile exiting = false;
 struct timespec start_ts;
 struct tm *start_tm;
 int trace_stat_maps_fd;
+int syscall_stat_maps_fd;
 
 static error_t parse_arg(int key, char *arg, struct argp_state *state)
 {
@@ -164,7 +165,7 @@ int comp(const void *a, const void *b)
 	return ((struct stat_info_node *)a)->avg < ((struct stat_info_node *)b)->avg;
 }
 
-static inline void pr_stat_info(int num)
+static inline void pr_stat_info(int map_fd, int num, int type)
 {
 	struct ti_key key, prev_key;
 	struct stat_info stat;
@@ -172,12 +173,20 @@ static inline void pr_stat_info(int num)
 	char comm_buf[2 * TASK_COMM_LEN];
 	char avg_buf[16],long_buf[16];
 	int err, idx = 0;
-
-	printf("\nPreemption Report:\n");
-
 	
-	while (bpf_map_get_next_key(trace_stat_maps_fd, &prev_key, &key) == 0) {
-		err = bpf_map_lookup_elem(trace_stat_maps_fd, &key, &stat);
+	switch (type) {
+	case PREEMPTION:
+		printf("\nPreemption Report:\n");
+		break;
+	case SYSCALL:
+		printf("\nSYSCALL Report:\n");
+		break;
+	default:
+		break;
+	}
+	
+	while (bpf_map_get_next_key(map_fd, &prev_key, &key) == 0) {
+		err = bpf_map_lookup_elem(map_fd, &key, &stat);
 		if (err < 0) {
 			fprintf(stderr, "Get stat info err %d\n", err);
 			break;
@@ -207,7 +216,9 @@ static inline void pr_stat_info(int num)
 
 	qsort(stat_list, num, sizeof(struct stat_info_node), comp);
 
-	printf("%-5s%-7s%-30s%-7s%-10s%-10s\n", "CPU", "TID", "COMM", "Count", "Avg", "Longest");
+	printf("%-5s%-7s%-30s%-7s%-10s%-10s\n", "CPU", "TID",
+		       	type == PREEMPTION ? "COMM" : "SYSCALL",
+		       	"Count", "Avg", "Longest");
 	for (int i=0;i<(num>10?10:num);i++) {
 		time_to_str(stat_list[i].avg, avg_buf, sizeof(avg_buf));
 		time_to_str(stat_list[i].longest, long_buf, sizeof(long_buf));
@@ -216,7 +227,6 @@ static inline void pr_stat_info(int num)
 			    	stat_list[i].comm, stat_list[i].count,
 				avg_buf, long_buf);
 	}
-
 }
 
 static inline void pr_ti(struct trace_info *ti, char *opt, char *delay)
@@ -372,6 +382,7 @@ int main(int argc, char **argv)
 	}
 	
 	trace_stat_maps_fd = bpf_map__fd(obj->maps.trace_stat_maps);
+	syscall_stat_maps_fd = bpf_map__fd(obj->maps.syscall_stat_maps);
 	
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
@@ -382,19 +393,28 @@ int main(int argc, char **argv)
 	printf("\nPress CTRL+C or wait until target exits to see report\n");
 	
 	/* setup event callbacks */
-	pb_opts.sample_cb = handle_event;
-	pb_opts.lost_cb = handle_lost_events;
-	pb = perf_buffer__new(bpf_map__fd(obj->maps.events), PERF_BUFFER_PAGES, &pb_opts);
-	err = libbpf_get_error(pb);
-	if (err) {
-		pb = NULL;
-		fprintf(stderr, "Failed to open perf buffer: %d\n", err);
-		goto cleanup;
+	if (env.output_log) {
+		pb_opts.sample_cb = handle_event;
+		pb_opts.lost_cb = handle_lost_events;
+		pb = perf_buffer__new(bpf_map__fd(obj->maps.events), PERF_BUFFER_PAGES, &pb_opts);
+		err = libbpf_get_error(pb);
+		if (err) {
+			pb = NULL;
+			fprintf(stderr, "Failed to open perf buffer: %d\n", err);
+			goto cleanup;
+		}
 	}
 	
 	/* main: poll */
-	while (!exiting && !obj->bss->targ_exit && 
-			(err = perf_buffer__poll(pb, 10000)) >= 0);
+	while (!exiting && !obj->bss->targ_exit) {
+	       if (env.output_log) {
+			err = perf_buffer__poll(pb, 10000);
+			if (err < 0)
+				break;
+	       } else {
+		       sleep(1);
+	       }
+	}
 	
 	if (exiting)
 		goto printinfo;
@@ -405,7 +425,9 @@ int main(int argc, char **argv)
 	printf("Error polling perf buffer: %d\n", err);
 
 printinfo:
-	pr_stat_info(obj->bss->stat_count);
+	pr_stat_info(trace_stat_maps_fd, obj->bss->stat_count, PREEMPTION);
+	if (env.trace_syscall)
+		pr_stat_info(syscall_stat_maps_fd, obj->bss->sys_count, SYSCALL);
 cleanup:
 	perf_buffer__free(pb);
 	schedsnoop_bpf__destroy(obj);

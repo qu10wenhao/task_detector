@@ -16,6 +16,11 @@ enum {
 	TYPE_SYSCALL_EXIT,
 };
 
+enum {
+	PREEMPTION,
+	SYSCALL,
+};
+
 struct trace_info {
 	int type;
 	int cpu;

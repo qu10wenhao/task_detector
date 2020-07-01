@@ -23,7 +23,7 @@ CPU  TID    COMM                          Count  Avg       Longest
 2    1297   xfsaild/dm-2                  2      3149ns    3206ns    
 ```
 
-It can also tracing the syscall by append options -s.
+It can also tracing the syscall by append options -s, which will output a syscall report at the end.
 
 ```Shell
 # schedsnoop -t 26371 -s
@@ -32,17 +32,21 @@ Press CTRL+C or wait until target exits to see report
 
 Preemption Report:
 CPU  TID    COMM                          Count  Avg       Longest   
-5    26371  test[35:nanosleep]            7      2043ms    2120ms    
-5    0      swapper/5                     8      45us      97us      
-5    694    kworker/5:1H                  8      37us      224us     
-5    2      kthreadd                      1      28us      28us      
-5    26371  test[1:write]                 15     25us      55us      
-5    26248  kworker/5:5                   11     10us      30us      
-5    35     migration/5                   10     2854ns    3836ns    
+3    704    kworker/3:1H                  5      88us      240us     
+3    3236   gmain                         4      59us      106us     
+3    0      swapper/3                     3      58us      126us     
+3    3764   kworker/3:1                   6      6359ns    17us      
+3    25     migration/3                   5      2134ns    2249ns    
+
+SYSCALL Report:
+CPU  TID    SYSCALL                       Count  Avg       Longest   
+3    3236   gmain[7:poll]                 3      6666ms    8000ms    
+3    26371  test[35:nanosleep]            3      2003ms    2008ms    
+3    26371  test[1:write]                 7      27us      68us      
+3    3236   gmain[254:inotify_add_watch]  32     3867ns    64us      
 ```
 
-With log option -l, it will print each related events synchronously with human-readable format, which could be more helpful on debugging the competition on CPU resource.
-Add debug option -d extraly could print raw timestamp.
+With log option -l, it will print each related events synchronously with human-readable format, which could be more helpful on debugging the competition on CPU resource. If syscall option -s is enabled, it will also print related syscall events. Enabling debug option -d additionally could print raw timestamp instead of local time.
 
 ```Shell
 # schedsnoop -t 26371 -l

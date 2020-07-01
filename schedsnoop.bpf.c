@@ -15,6 +15,7 @@ const volatile bool output_log = false;
 bool targ_exit = false;
 int trace_on = -1;
 int stat_count = 0;
+int sys_count = 0;
 __u64 p_time = 0;
 
 struct {
@@ -37,6 +38,13 @@ struct {
 	__type(value, struct stat_info);
 } trace_stat_maps SEC(".maps");
 
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, NR_ENTRY_MAX);
+	__type(key, struct ti_key);
+	__type(value, struct stat_info);
+} syscall_stat_maps SEC(".maps");
+
 static __always_inline void set_trace_on(int cpu)
 {
 	trace_on = cpu;
@@ -52,17 +60,20 @@ static __always_inline int should_trace(int cpu)
 	return trace_on == cpu;
 }
 
-static __always_inline void update_stat_info(struct ti_key *tik, __u64 duration)
+static __always_inline void update_stat_info(void *map, struct ti_key *tik, __u64 duration)
 {
-	struct stat_info *stat = bpf_map_lookup_elem(&trace_stat_maps, tik);
+	struct stat_info *stat = bpf_map_lookup_elem(map, tik);
 	if (!stat) {
 		struct stat_info tmp = {
 			.count = 1,
 			.total = duration,
 			.longest = duration,
 		};
-		bpf_map_update_elem(&trace_stat_maps, tik, &tmp, BPF_ANY);
-		stat_count += 1;
+		bpf_map_update_elem(map, tik, &tmp, BPF_ANY);
+		if (map == &trace_stat_maps)
+			stat_count += 1;
+		else
+			sys_count += 1;
 	} else {
 		stat->count = stat->count + 1;
 		stat->total = stat->total + duration;
@@ -87,14 +98,14 @@ static __always_inline void handle_trace(void *ctx, struct ti_key *tik, int type
 		if (tik->tid != targ_tid) {
 			duration = ts - p_time;
 			bpf_map_delete_elem(&trace_info_maps, tik);
-			update_stat_info(tik, duration);
+			update_stat_info(&trace_stat_maps, tik, duration);
 		}
 		break;
 	case TYPE_DEQUEUE:
 		if (tik->tid != targ_tid) {
 			duration = ts - p_time;
 			bpf_map_delete_elem(&trace_info_maps, tik);
-			update_stat_info(tik, duration);
+			update_stat_info(&trace_stat_maps, tik, duration);
 		}
 		break;
 	case TYPE_SYSCALL_ENTER:
@@ -106,7 +117,7 @@ static __always_inline void handle_trace(void *ctx, struct ti_key *tik, int type
 			return;
 		duration = ts - *last_ts;
 		bpf_map_delete_elem(&trace_info_maps, tik);
-		update_stat_info(tik, duration);
+		update_stat_info(&syscall_stat_maps, tik, duration);
 		break;
 	}
 
