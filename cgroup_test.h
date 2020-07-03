@@ -15,7 +15,7 @@ struct user_info{
 	int cg_id;
 	int cg_fid;
 	int level;
-	char* name;
+	char name[20];
 	int exit;
 	int opened;
 };

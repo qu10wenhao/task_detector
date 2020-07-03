@@ -32,34 +32,34 @@ int handle__sched_process_exit(u64* ctx){
 	val;					\
 })
 
-SEC("kprobe/cgroup_pidlist_start")
-int BPF_KPROBE(kprobe__cgroup_pidlist_start, struct seq_file *sf){
-	int pid = bpf_get_current_pid_tgid();
-	struct user_info *ui = get_user_info();
-	
-	if (ui) ui->opened = pid;
-
-	if (!ui || ui->selfpid != pid)
-		return 0;
-
-	struct kernfs_open_file *of;
-	struct kernfs_node *kn;
-	struct kernfs_node *parent;
-	struct cgroup *cgrp;
-	int level;
-	u64 *ids;
-	
-	of	= _(sf->private);
-	kn	= _(of->kn);
-	parent	= _(kn->parent);
-	cgrp	= _(parent->priv);
-	level	= _(cgrp->level);
-	ids	= _(cgrp->ancestor_ids);
-
-	ui->level = level;
-	ui->cg_fid = _(parent->id);
-	return 0;
-}
+//SEC("kprobe/cgroup_pidlist_start")
+//int BPF_KPROBE(kprobe__cgroup_pidlist_start, struct seq_file *sf){
+//	int pid = bpf_get_current_pid_tgid();
+//	struct user_info *ui = get_user_info();
+//	
+//	if (ui) ui->opened = pid;
+//
+//	if (!ui || ui->selfpid != pid)
+//		return 0;
+//
+//	struct kernfs_open_file *of;
+//	struct kernfs_node *kn;
+//	struct kernfs_node *parent;
+//	struct cgroup *cgrp;
+//	int level;
+//	u64 *ids;
+//	
+//	of	= _(sf->private);
+//	kn	= _(of->kn);
+//	parent	= _(kn->parent);
+//	cgrp	= _(parent->priv);
+//	level	= _(cgrp->level);
+//	ids	= _(cgrp->ancestor_ids);
+//
+//	ui->level = level;
+//	ui->cg_fid = _(parent->id);
+//	return 0;
+//}
 
 SEC("tp_btf/sched_wakeup")
 int handle__sched_wakeup(u64 *ctx){
@@ -76,6 +76,8 @@ int handle__sched_wakeup(u64 *ctx){
 	struct cgroup_subsys_state* subsys_state;
 	struct cgroup* cgrp;
 	struct kernfs_node* kn;
+	struct kernfs_node* parent;
+	char* name;
 	
 	css = _(p->cgroups);
 	subsys_ptr = _(css->subsys);
@@ -85,6 +87,12 @@ int handle__sched_wakeup(u64 *ctx){
 
 	//int cgid = bpf_get_current_cg_id();
 	ui->cg_id = _(kn->id);
+	ui->cg_id = bpf_get_current_cgid(index);
+
+	parent = _(kn->parent);
+	name = _(parent->name);
+
+	bpf_probe_read_kernel_str(&(ui->name),sizeof(ui->name),name);
 	return 0;
 }
 	

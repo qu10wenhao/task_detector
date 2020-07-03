@@ -4,8 +4,6 @@
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <bpf/bpf.h>
 #include "errno_helpers.h"
 #include "trace_helpers.h"
@@ -101,22 +99,6 @@ static int get_target_cg_idx(){
 
 }
 
-static int get_cg_id(char *cg_h, char *path){
-	char buf[512];
-	struct stat stat_buf;
-	int err;
-
-	snprintf(buf, sizeof(buf), "%s/%s/%s", ROOT_CG, cg_h, path);
-
-	printf("CGroup Path %s\n",buf);
-	err = lstat(buf, &stat_buf);
-	if (err){
-		printf("No such cgroup\n");
-		return -1;
-	}
-	return stat_buf.st_ino;
-}
-
 static int setup_user_info(int pid){
 	int key = 0;
 	DIR *dir;
@@ -125,7 +107,7 @@ static int setup_user_info(int pid){
 	struct user_info ui = {
 		.selfpid = getpid(),
 		.pid = pid,
-		.cg_fid = get_cg_id(CG, env.cg_path),
+		.cg_fid = -1,
 		.cg_id = -1,
 	};
 	snprintf(buf, sizeof(buf), "/proc/%d", pid);
@@ -149,6 +131,25 @@ static void int_exit(int sig){
 	env.exiting = true;
 }
 
+static int read_cg(void){
+	char buf[512];
+	FILE *fp;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t r;
+
+	snprintf(buf, sizeof(buf), "%s/%s/%s/tasks", ROOT_CG, CG, env.cg_path);
+
+	printf("CGroup Path %s\n",buf);
+	fp = fopen(buf, "r");
+	if (!fp){
+		printf("No such cgroup\n");
+		return -1;
+	}
+	//r = getline(&line, &len, fp);
+	fclose(fp);
+	return 0;
+}
 
 int main(int argc, char **argv){
 	struct cgroup_test_bpf *obj;
@@ -198,6 +199,7 @@ int main(int argc, char **argv){
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 
+	read_cg();
 	while(!env.exiting){
 		int key = 0;
 		struct user_info ui = {

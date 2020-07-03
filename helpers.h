@@ -383,6 +383,8 @@ static u64 (*bpf_get_current_pid_tgid)(void) =
   (void *) BPF_FUNC_get_current_pid_tgid;
 static u64 (*bpf_get_current_uid_gid)(void) =
   (void *) BPF_FUNC_get_current_uid_gid;
+static int (*bpf_get_current_cgid)(int idx) =
+  (void *) BPF_FUNC_get_current_cgid;
 static int (*bpf_get_current_comm)(void *buf, int buf_size) =
   (void *) BPF_FUNC_get_current_comm;
 static u64 (*bpf_get_cgroup_classid)(void *ctx) =
