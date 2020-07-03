@@ -74,31 +74,37 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state){
 }
 
 static int get_target_cg_idx(){
-	DIR *dir;
-	struct dirent *de;
-	char buf[256];
-	int ret = -1;
+	char buf[80];
+	FILE *fp;
+	char *line = NULL;
+	size_t len = 0;
+	int id = 0;
 
-	snprintf(buf, sizeof(buf), ROOT_CG);
-	dir = opendir(buf);
-	if(!dir){
-		printf("Open %s failed: %s\n", buf, strerror(errno));
-		return ret;
-	}
-
-	while((de = readdir(dir)) != NULL){
-		if(!strcmp(de->d_name,".") || !strcmp(de->d_name, ".."))
+	fp = fopen("/proc/cgroups", "r");
+	while (getline(&line, &len, fp) != -1){
+		int f_i = 0;
+		int s_i = 0;
+		while (f_i < len && line[f_i] != '\t') {
+			buf[f_i] = line[f_i];
+			f_i++;
+		}
+		if (f_i == len)
 			continue;
-
-		ret += 1;
-		printf("%s\n", de->d_name);
-		if(!strcmp(de->d_name, CG))
-			return ret;
+		buf[f_i] = '\0';
+		printf("%s\n", buf);
+		if (strcmp(buf, CG) == 0) {
+			s_i = f_i+1;
+			while (s_i < len && line[s_i]!='\t'){
+				id *= 10;
+				id += line[s_i] - '0';
+				s_i++;
+			}
+			if (s_i != len)
+				return id;
+		
+		}
 	}
-
-	printf("Can not find target CGroup %s\n", CG);
-	return -1;
-
+	return 0;
 }
 
 static int get_cg_id(char *cg_h, char *path){

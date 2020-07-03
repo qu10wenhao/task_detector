@@ -61,38 +61,19 @@ int handle__sched_process_exit(u64* ctx){
 //	return 0;
 //}
 
-SEC("tp_btf/sched_wakeup")
-int handle__sched_wakeup(u64 *ctx){
-	struct task_struct *p = (void*) ctx[0];
+SEC("tp_btf/sched_switch")
+int BPF_PROG(handle__sched_switch, bool preempt, struct task_struct *p, struct task_struct *next)
+{
 	struct user_info *ui = get_user_info();
 
 	if(!ui || ui->pid != p->pid)
 		return 0;
-		
-	//int index = 1;
-	unsigned int index = ui->cg_idx;
-	struct css_set* css;
-	struct cgroup_subsys_state** subsys_ptr;
-	struct cgroup_subsys_state* subsys_state;
-	struct cgroup* cgrp;
-	struct kernfs_node* kn;
-	struct kernfs_node* parent;
-	char* name;
-	
-	css = _(p->cgroups);
-	subsys_ptr = _(css->subsys);
-	subsys_state = _(subsys_ptr[index]);
-	cgrp = _(subsys_state->cgroup);
-	kn = _(cgrp->kn);
 
-	//int cgid = bpf_get_current_cg_id();
-	ui->cg_id = _(kn->id);
+	unsigned int index = ui->cg_idx;
+		
 	ui->cg_id = bpf_get_current_cgid(index);
 
-	parent = _(kn->parent);
-	name = _(parent->name);
-
-	bpf_probe_read_kernel_str(&(ui->name),sizeof(ui->name),name);
+	bpf_get_current_comm(&(ui->name),sizeof(ui->name));
 	return 0;
 }
 	
