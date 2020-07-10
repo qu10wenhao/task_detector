@@ -25,6 +25,7 @@ static const char argp_program_doc[] =
 static const struct argp_option opts[] = {
 	{ "pid", 'p', "PID", 0, "Process PID"},
 	{ "cgroup", 'c', "CG_PATH", NULL, "Cgroup path"},
+	{ "hierarchy", 'h', "CG_HIERARCHY", NULL, "Cgroup hierarchy"},
 	{},
 };
 
@@ -33,6 +34,7 @@ static struct env{
 	bool exiting;
 	int target;
 	char *cg_path;
+	char *cg_h;
 } env = {
 	.exiting = false,
 };
@@ -54,17 +56,18 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state){
 			}
 			break;
 		case 'c':
-			if(arg == NULL){
-				env.cg_path = "";
-			}else{
-				env.cg_path = arg;
-			};
+			env.cg_path = arg;
+			break;
+		case 'h':
+			env.cg_h = arg;
 			break;
 		case ARGP_KEY_END:
 			if(!env.target){
 				fprintf(stderr, "No target PID\n");
 				argp_usage(state);
 			}
+			if (!env.cg_h) 
+				env.cg_h = CG;
 			break;
 		default:
 			return ARGP_ERR_UNKNOWN;
@@ -91,8 +94,8 @@ static int get_target_cg_idx(){
 		if (f_i == len)
 			continue;
 		buf[f_i] = '\0';
-		printf("%s\n", buf);
-		if (strcmp(buf, CG) == 0) {
+		//printf("%s\n", buf);
+		if (strcmp(buf, env.cg_h) == 0) {
 			s_i = f_i+1;
 			while (s_i < len && line[s_i]!='\t'){
 				id *= 10;
@@ -111,8 +114,10 @@ static int get_cg_id(char *cg_h, char *path){
 	char buf[512];
 	struct stat stat_buf;
 	int err;
-
-	snprintf(buf, sizeof(buf), "%s/%s/%s", ROOT_CG, cg_h, path);
+	if (path)
+		snprintf(buf, sizeof(buf), "%s/%s/%s", ROOT_CG, cg_h, path);
+	else
+		snprintf(buf, sizeof(buf), "%s/%s", ROOT_CG, cg_h);
 
 	printf("CGroup Path %s\n",buf);
 	err = lstat(buf, &stat_buf);
@@ -131,7 +136,7 @@ static int setup_user_info(int pid){
 	struct user_info ui = {
 		.selfpid = getpid(),
 		.pid = pid,
-		.cg_fid = get_cg_id(CG, env.cg_path),
+		.cg_fid = get_cg_id(env.cg_h, env.cg_path),
 		.cg_id = -1,
 	};
 	snprintf(buf, sizeof(buf), "/proc/%d", pid);
@@ -203,7 +208,7 @@ int main(int argc, char **argv){
 
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
-
+	int count = 0;
 	while(!env.exiting){
 		int key = 0;
 		struct user_info ui = {
@@ -215,9 +220,15 @@ int main(int argc, char **argv){
 			printf("Target \"%d\" Destroyed\n", env.target);
 			goto cleanup;
 		}
-		printf("File CG id %d, BPF CG id %d\n",ui.cg_fid, ui.cg_id);
-		printf("File name %s\n",ui.name);
-		
+
+		int cgid = bpf_get_cgroup_id(9,"test");	
+
+		if (count > 0) printf("\033[3A");
+		printf("\rFile CG id %d, BPF CG id %d,",ui.cg_fid, ui.cg_id);
+		printf(" User bpf call cgid %d\n", cgid);
+		printf("File name %s, count %d\n",ui.name, count);
+		printf("Task pid %d, Task tgid %d\n",ui.task_pid, ui.task_tgid);
+		count++;
 		sleep(1);
 
 	}

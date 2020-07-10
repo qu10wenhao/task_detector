@@ -1,0 +1,354 @@
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 07052d44bca1..eddf99374c9b 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1605,6 +1605,8 @@ extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
+ extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
+ extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
+ extern const struct bpf_func_proto bpf_get_current_comm_proto;
++extern const struct bpf_func_proto bpf_get_current_cgid_proto;
++extern const struct bpf_func_proto bpf_get_current_cgroup_name_proto;
+ extern const struct bpf_func_proto bpf_get_stackid_proto;
+ extern const struct bpf_func_proto bpf_get_stack_proto;
+ extern const struct bpf_func_proto bpf_sock_map_update_proto;
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4598e4da6b1b..aff4a67cc495 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -107,6 +107,11 @@ struct cgroup_subsys_state *css_tryget_online_from_dir(struct dentry *dentry,
+ struct cgroup *cgroup_get_from_path(const char *path);
+ struct cgroup *cgroup_get_from_fd(int fd);
+ 
++struct cgroup *task_cgroup_from_root(struct task_struct *task,
++				     struct cgroup_root *root);
++struct cgroup_root *get_cgroup_root_from_id(int hierarchy_id);
++int get_hierarchy_id_from_name(const char *name);
++
+ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *);
+ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c65b374a5090..b08f939a1099 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -117,6 +117,8 @@ enum bpf_cmd {
+ 	BPF_LINK_GET_NEXT_ID,
+ 	BPF_ENABLE_STATS,
+ 	BPF_ITER_CREATE,
++	BPF_GET_HIERARCHY_ID,
++	BPF_GET_CGROUP_ID,
+ };
+ 
+ enum bpf_map_type {
+@@ -627,6 +629,12 @@ union bpf_attr {
+ 		__u32		flags;
+ 	} iter_create;
+ 
++	struct { /* struct used by BPF_GET_CGROUP command */
++		__aligned_u64	name;
++		__aligned_u64	path;
++		__u32		hierarchy_id;
++	} cgroup;
++
+ } __attribute__((aligned(8)));
+ 
+ /* The description below is an attempt at providing documentation to eBPF
+@@ -3389,7 +3397,9 @@ union bpf_attr {
+ 	FN(ringbuf_submit),		\
+ 	FN(ringbuf_discard),		\
+ 	FN(ringbuf_query),		\
+-	FN(csum_level),
++	FN(csum_level),			\
++	FN(get_current_cgid),		\
++	FN(get_current_cgroup_name),				
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9df4cc9a2907..085652da3e46 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2160,6 +2160,7 @@ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
+ 
+ const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
++const struct bpf_func_proto bpf_get_current_cgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_comm_proto __weak;
+ const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
+ const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto __weak;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index be43ab3e619f..e37d6c24317d 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -203,6 +203,61 @@ const struct bpf_func_proto bpf_get_current_uid_gid_proto = {
+ 	.ret_type	= RET_INTEGER,
+ };
+ 
++BPF_CALL_1(bpf_get_current_cgid, u32, idx)
++{
++	struct cgroup_root* root;
++	struct cgroup* cgrp;
++
++	root = get_cgroup_root_from_id(idx);
++	if (root) {
++		cgrp = task_cgroup_from_root(current, root);
++		if (cgrp)
++			return cgroup_id(cgrp);
++	}
++
++	return -EINVAL;
++}
++
++const struct bpf_func_proto bpf_get_current_cgid_proto = {
++	.func		= bpf_get_current_cgid,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_3(bpf_get_current_cgroup_name, u32, idx, char *, buf, u32, size)
++{
++	struct task_struct *task = current;
++	int i = 0;
++
++	if (unlikely(!task))
++		goto err_clear;
++
++	while (i < CGROUP_SUBSYS_COUNT) {
++		if (task->cgroups->subsys[i]->cgroup->root->hierarchy_id == idx) {
++			struct kernfs_node* tmp_node = task->cgroups->subsys[i]->cgroup->kn;
++			kernfs_name(tmp_node, buf, size);
++			buf[size-1] = 0;
++			break;
++		}
++		i++;
++	}
++	
++	return 0;
++err_clear:
++	memset(buf, 0, size);
++	return -EINVAL;
++}
++
++const struct bpf_func_proto bpf_get_current_cgroup_name_proto = {
++	.func		= bpf_get_current_cgroup_name,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++};
++
+ BPF_CALL_2(bpf_get_current_comm, char *, buf, u32, size)
+ {
+ 	struct task_struct *task = current;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 9693730833d2..e2308bb6e08c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -29,6 +29,7 @@
+ #include <linux/bpf_lsm.h>
+ #include <linux/poll.h>
+ #include <linux/bpf-netns.h>
++#include <linux/cgroup.h>
+ 
+ #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+ 			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+@@ -4062,6 +4063,33 @@ static int bpf_iter_create(union bpf_attr *attr)
+ 	return err;
+ }
+ 
++#define BPF_CGROUP_LAST_FIELD cgroup.hierarchy_id
++static int bpf_get_hierarchy_id(const union bpf_attr *attr)
++{
++	if (CHECK_ATTR(BPF_CGROUP))
++		return -EINVAL;	
++
++	return get_hierarchy_id_from_name((char *)attr->cgroup.name);
++	//return 0;
++}
++
++static int bpf_get_cgroup_id(const union bpf_attr *attr)
++{
++	struct cgroup_root *root;
++	struct kernfs_node *kn;
++
++	if (CHECK_ATTR(BPF_CGROUP))
++		return -EINVAL;
++	
++	root = get_cgroup_root_from_id(attr->cgroup.hierarchy_id);
++	kn = kernfs_walk_and_get(root->cgrp.kn, (char *)attr->cgroup.path);
++	
++	if (kn)
++		return kn->id;
++
++	return 0;
++}
++
+ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size)
+ {
+ 	union bpf_attr attr;
+@@ -4192,6 +4220,12 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+ 	case BPF_ITER_CREATE:
+ 		err = bpf_iter_create(&attr);
+ 		break;
++	case BPF_GET_HIERARCHY_ID:
++		err = bpf_get_hierarchy_id(&attr);
++		break;
++	case BPF_GET_CGROUP_ID:
++		err = bpf_get_cgroup_id(&attr);
++		break;
+ 	default:
+ 		err = -EINVAL;
+ 		break;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1ea181a58465..684483dbb74a 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1426,7 +1426,7 @@ struct cgroup *task_cgroup_from_root(struct task_struct *task,
+ 	 */
+ 	return cset_cgroup_from_root(task_css_set(task), root);
+ }
+-
++EXPORT_SYMBOL_GPL(task_cgroup_from_root);
+ /*
+  * A task must hold cgroup_mutex to modify cgroups.
+  *
+@@ -6592,4 +6592,41 @@ static int __init cgroup_sysfs_init(void)
+ }
+ subsys_initcall(cgroup_sysfs_init);
+ 
++struct cgroup_root* get_cgroup_root_from_id(int hierarchy_id)
++{
++	return idr_get_next(&cgroup_hierarchy_idr, &hierarchy_id);
++}
++//EXPORT_SYMBOL_GPL(get_cgroup_root_from_id);
++
++int get_hierarchy_id_from_name(const char *name)
++{
++	struct cgroup_root *root;
++	int retval;
++
++	mutex_lock(&cgroup_mutex);
++	spin_lock_irq(&css_set_lock);
++	
++	for_each_root(root){
++		struct cgroup_subsys *ss;
++		int ssid;
++
++		if (root == &cgrp_dfl_root && !cgrp_dfl_visible)
++			continue;
++		
++		if (root != &cgrp_dfl_root)
++			for_each_subsys(ss, ssid)
++				if (root->subsys_mask & (1 << ssid))
++					if(0 == strcmp(ss->legacy_name, name)){
++						retval = root->hierarchy_id;
++						goto out_unlock;
++					}
++	}
++	retval = 0;
++out_unlock:
++	spin_unlock_irq(&css_set_lock);
++	mutex_unlock(&cgroup_mutex);
++	return retval;
++}
++//EXPORT_SYMBOL_GPL(get_hierarchy_id_from_name);
++
+ #endif /* CONFIG_SYSFS */
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e729c9e587a0..04ac0f62197d 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1082,6 +1082,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_task_proto;
+ 	case BPF_FUNC_get_current_uid_gid:
+ 		return &bpf_get_current_uid_gid_proto;
++	case BPF_FUNC_get_current_cgid:
++		return &bpf_get_current_cgid_proto;
++	case BPF_FUNC_get_current_cgroup_name:
++		return &bpf_get_current_cgroup_name_proto;
+ 	case BPF_FUNC_get_current_comm:
+ 		return &bpf_get_current_comm_proto;
+ 	case BPF_FUNC_trace_printk:
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9a3427bdad4e..1331adacdf8c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6137,6 +6137,8 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_event_output_data_proto;
+ 	case BPF_FUNC_get_current_pid_tgid:
+ 		return &bpf_get_current_pid_tgid_proto;
++	case BPF_FUNC_get_current_cgid:
++		return &bpf_get_current_cgid_proto;
+ 	case BPF_FUNC_get_current_comm:
+ 		return &bpf_get_current_comm_proto;
+ #ifdef CONFIG_CGROUPS
+@@ -6181,6 +6183,10 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_event_output_data_proto;
+ 	case BPF_FUNC_get_current_pid_tgid:
+ 		return &bpf_get_current_pid_tgid_proto;
++	case BPF_FUNC_get_current_cgid:
++		return &bpf_get_current_cgid_proto;
++	case BPF_FUNC_get_current_cgroup_name:
++		return &bpf_get_current_cgroup_name_proto;
+ 	case BPF_FUNC_get_current_comm:
+ 		return &bpf_get_current_comm_proto;
+ #ifdef CONFIG_CGROUPS
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index c65b374a5090..92bdf16305a6 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3389,7 +3389,8 @@ union bpf_attr {
+ 	FN(ringbuf_submit),		\
+ 	FN(ringbuf_discard),		\
+ 	FN(ringbuf_query),		\
+-	FN(csum_level),
++	FN(csum_level),			\
++	FN(get_current_cgid),		
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index a7329b671c41..219e0ee6449c 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -861,3 +861,24 @@ int bpf_enable_stats(enum bpf_stats_type type)
+ 
+ 	return sys_bpf(BPF_ENABLE_STATS, &attr, sizeof(attr));
+ }
++
++int bpf_get_hierarchy_id(const char *name)
++{
++	union bpf_attr attr;
++	
++	memset(&attr, 0, sizeof(attr));
++	attr.cgroup.name = ptr_to_u64((void *)name);
++	
++	return sys_bpf(BPF_GET_HIERARCHY_ID, &attr, sizeof(attr));
++}
++
++int bpf_get_cgroup_id(int hid, const char *path)
++{
++	union bpf_attr attr;
++	
++	memset(&attr, 0, sizeof(attr));
++	attr.cgroup.hierarchy_id = hid;
++	attr.cgroup.path = ptr_to_u64((void *)path);
++	
++	return sys_bpf(BPF_GET_CGROUP_ID, &attr, sizeof(attr));
++}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 1b6015b21ba8..a91b47d52964 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -128,6 +128,9 @@ LIBBPF_API int bpf_map_delete_elem(int fd, const void *key);
+ LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
+ LIBBPF_API int bpf_map_freeze(int fd);
+ 
++LIBBPF_API int bpf_get_hierarchy_id(const char* name);
++LIBBPF_API int bpf_get_cgroup_id(int hid, const char *path);
++
+ struct bpf_map_batch_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
+ 	__u64 elem_flags;

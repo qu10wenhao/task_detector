@@ -14,8 +14,10 @@ struct user_info{
 	unsigned int cg_idx;
 	int cg_id;
 	int cg_fid;
+	pid_t task_pid;
+	pid_t task_tgid;
 	int level;
-	char name[20];
+	char name[256];
 	int exit;
 	int opened;
 };

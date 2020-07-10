@@ -10006,7 +10006,8 @@ enum bpf_func_id {
 	BPF_FUNC_ringbuf_query = 134,
 	BPF_FUNC_csum_level = 135,
 	BPF_FUNC_get_current_cgid = 136,
-	__BPF_FUNC_MAX_ID = 137,
+	BPF_FUNC_get_current_cgroup_name = 137,
+	__BPF_FUNC_MAX_ID = 138,
 };
 
 struct bpf_func_info {
@@ -40353,6 +40354,8 @@ typedef u64 (*btf_bpf_get_current_pid_tgid)();
 typedef u64 (*btf_bpf_get_current_uid_gid)();
 
 typedef u64 (*btf_bpf_get_current_cgid)(u32);
+
+typedef u64 (*btf_bpf_get_current_cgroup_name)(u32, char *, u32);
 
 typedef u64 (*btf_bpf_get_current_comm)(char *, u32);
 
