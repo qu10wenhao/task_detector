@@ -485,7 +485,7 @@ int main(int argc, char **argv)
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 
-	printf("Start tracing schedule events related to");
+	printf("Start tracing schedule events related to ");
 	
 	if (env.mode == MODE_TID) {
 	 	printf("tid %d", env.targ_tid);
