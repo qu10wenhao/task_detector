@@ -9866,6 +9866,11 @@ union bpf_attr {
 		__u32 link_fd;
 		__u32 flags;
 	} iter_create;
+	struct {
+		__u64 name;
+		__u64 path;
+		__u32 hierarchy_id;
+	} cgroup;
 };
 
 enum bpf_func_id {
@@ -10007,7 +10012,8 @@ enum bpf_func_id {
 	BPF_FUNC_csum_level = 135,
 	BPF_FUNC_get_current_cgid = 136,
 	BPF_FUNC_get_current_cgroup_name = 137,
-	__BPF_FUNC_MAX_ID = 138,
+	BPF_FUNC_get_task_cgid = 138,
+	__BPF_FUNC_MAX_ID = 139,
 };
 
 struct bpf_func_info {
@@ -39670,6 +39676,8 @@ enum bpf_cmd {
 	BPF_LINK_GET_NEXT_ID = 31,
 	BPF_ENABLE_STATS = 32,
 	BPF_ITER_CREATE = 33,
+	BPF_GET_HIERARCHY_ID = 34,
+	BPF_GET_CGROUP_ID = 35,
 };
 
 enum {
@@ -40356,6 +40364,8 @@ typedef u64 (*btf_bpf_get_current_uid_gid)();
 typedef u64 (*btf_bpf_get_current_cgid)(u32);
 
 typedef u64 (*btf_bpf_get_current_cgroup_name)(u32, char *, u32);
+
+typedef u64 (*btf_bpf_get_task_cgid)(u32, u32);
 
 typedef u64 (*btf_bpf_get_current_comm)(char *, u32);
 

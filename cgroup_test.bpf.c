@@ -72,6 +72,7 @@ int BPF_PROG(handle__sched_switch, bool preempt, struct task_struct *p, struct t
 	unsigned int index = ui->cg_idx;
 		
 	ui->cg_id = bpf_get_current_cgid(index);
+	ui->cg_id = bpf_get_task_cgid(p->pid, index);
 	ui->task_pid = bpf_get_current_pid_tgid();
 	ui->task_tgid = (bpf_get_current_pid_tgid() >> 32);
 

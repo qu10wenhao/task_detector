@@ -24,8 +24,8 @@ static const char argp_program_doc[] =
 
 static const struct argp_option opts[] = {
 	{ "pid", 'p', "PID", 0, "Process PID"},
-	{ "cgroup", 'c', "CG_PATH", NULL, "Cgroup path"},
-	{ "hierarchy", 'h', "CG_HIERARCHY", NULL, "Cgroup hierarchy"},
+	{ "cgroup", 'c', "CG_PATH", 0, "Cgroup path"},
+	{ "hierarchy", 'h', "CG_HIERARCHY", 0, "Cgroup hierarchy"},
 	{},
 };
 
@@ -68,6 +68,8 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state){
 			}
 			if (!env.cg_h) 
 				env.cg_h = CG;
+			if (!env.cg_path)
+				env.cg_path = "";
 			break;
 		default:
 			return ARGP_ERR_UNKNOWN;
@@ -209,6 +211,7 @@ int main(int argc, char **argv){
 	signal(SIGINT, int_exit);
 	signal(SIGTERM, int_exit);
 	int count = 0;
+	printf("Start\n");
 	while(!env.exiting){
 		int key = 0;
 		struct user_info ui = {
@@ -221,11 +224,11 @@ int main(int argc, char **argv){
 			goto cleanup;
 		}
 
-		int cgid = bpf_get_cgroup_id(9,"test");	
-
+		int hid = bpf_get_hierarchy_id("cpu");
+		int cgid = bpf_get_cgroup_id(hid,env.cg_path);	
 		if (count > 0) printf("\033[3A");
-		printf("\rFile CG id %d, BPF CG id %d,",ui.cg_fid, ui.cg_id);
-		printf(" User bpf call cgid %d\n", cgid);
+		printf("\rHID %d, File CG id %d, BPF CG id %d,",hid, ui.cg_fid, ui.cg_id);
+		printf(" User bpf call cgid %d, path %s\n", cgid, env.cg_path);
 		printf("File name %s, count %d\n",ui.name, count);
 		printf("Task pid %d, Task tgid %d\n",ui.task_pid, ui.task_tgid);
 		count++;
