@@ -12,7 +12,6 @@ ARCH := $(shell uname -m | sed 's/x86_64/x86/')
 APPS = \
 	schedsnoop \
 	cgroup_test \
-	tasksnoop \
 	#
 
 COMMON_OBJ = \

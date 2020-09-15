@@ -1,2 +1,4 @@
 /.output
 /cgroup_test
+/schedsnoop
+/old
